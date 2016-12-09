@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html lang="en" class="no-js ie6 lt8"> <![endif]-->
+<!--[if IE 7 ]>
+<html lang="en" class="no-js ie7 lt8"> <![endif]-->
+<!--[if IE 8 ]>
+<html lang="en" class="no-js ie8 lt8"> <![endif]-->
+<!--[if IE 9 ]>
+<html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="UTF-8"/>
+    <title>云端通讯录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="这是一个具有云同步功能的通讯录,通过它你可以轻松备份,管理和使用手机里的通讯录"/>
+    <meta name="keywords" content="通讯录,云通讯录,联系人"/>
+    <meta name="author" content="Codrops"/>
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/login.css"/>
+    <link rel="stylesheet" type="text/css" href="css/animate-custom.css"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>云端通讯录</h1>
+        <nav class="codrops-demos">
+            让您的工作更为高效，生活更加便捷
+        </nav>
+    </header>
+    <section>
+        <div id="container_demo">
+            <!--隐藏链接,做切换登录注册用-->
+            <a class="hiddenanchor" id="toregister"></a>
+            <a class="hiddenanchor" id="tologin"></a>
+
+            <div id="wrapper">
+                <!--登录页-->
+                <div id="login" class="animate form">
+                    <form action="mysuperscript.php" autocomplete="on">
+                        <h1>登录平台</h1>
+                        <p>
+                            <label for="phone" class="icon-phone"> 手机号 </label>
+                            <input id="phone" name="userphone" required="required" type="text"
+                                   placeholder="my phone number"/>
+                        </p>
+                        <p>
+                            <label for="password" class="icon-key"> 密码 </label>
+                            <input id="password" name="password" required="required" type="password"
+                                   placeholder="my password"/>
+                        </p>
+                        <p class="keeplogin">
+                            <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping"/>
+                            <label for="loginkeeping">记住我</label>
+                        </p>
+                        <p class="login button">
+                            <input type="submit" value="登录"/>
+                        </p>
+                        <p class="change_link">
+                            还没有帐号?
+                            <a href="#toregister" class="to_register">注册</a>
+                        </p>
+                    </form>
+                </div>
+                <!--注册页-->
+                <div id="register" class="animate form">
+                    <form action="mysuperscript.php" autocomplete="on">
+                        <h1> 注册帐号 </h1>
+                        <p>
+                            <label for="usernamesignup" class="icon-user">用户名</label>
+                            <input id="usernamesignup" name="usernamesignup" required="required" type="text"
+                                   placeholder="真实姓名或常用昵称"/>
+                        </p>
+                        <p>
+                            <label for="phonesignup" class="icon-phone"> 手机号 </label>
+                            <input id="phonesignup" name="phonesignup" required="required" type="email"
+                                   placeholder="仅支持中国大陆手机号"/>
+                        </p>
+                        <p>
+                            <label for="passwordsignup" class="icon-key"> 密码 </label>
+                            <input id="passwordsignup" name="passwordsignup" required="required" type="password"
+                                   placeholder="不少于6位"/>
+                        </p>
+                        <p>
+                            <label for="passwordsignup_confirm" class="icon-key"> 请再次确认密码 </label>
+                            <input id="passwordsignup_confirm" name="passwordsignup_confirm" required="required"
+                                   type="password" placeholder="不少于6位"/>
+                        </p>
+                        <p class="signin button">
+                            <input type="submit" value="注册"/>
+                        </p>
+                        <p class="change_link">
+                            已有帐号 ?
+                            <a href="#tologin" class="to_register"> 登录 </a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
