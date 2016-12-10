@@ -37,11 +37,11 @@
             <div id="wrapper">
                 <!--登录页-->
                 <div id="login" class="animate form">
-                    <form action="mysuperscript.php" autocomplete="on">
+                    <form action="mysuperscript.php" autocomplete="on" id="login-form">
                         <h1>登录平台</h1>
                         <p>
                             <label for="phone" class="icon-phone"> 手机号 </label>
-                            <input id="phone" name="userphone" required="required" type="text"
+                            <input id="phone" name="phone" required="required" type="text"
                                    placeholder="my phone number"/>
                         </p>
                         <p>
@@ -64,7 +64,7 @@
                 </div>
                 <!--注册页-->
                 <div id="register" class="animate form">
-                    <form action="mysuperscript.php" autocomplete="on">
+                    <form action="mysuperscript.php" autocomplete="on" id="register-form">
                         <h1> 注册帐号 </h1>
                         <p>
                             <label for="usernamesignup" class="icon-user">用户名</label>
@@ -73,7 +73,7 @@
                         </p>
                         <p>
                             <label for="phonesignup" class="icon-phone"> 手机号 </label>
-                            <input id="phonesignup" name="phonesignup" required="required" type="email"
+                            <input id="phonesignup" name="phonesignup" required="required" type="text"
                                    placeholder="仅支持中国大陆手机号"/>
                         </p>
                         <p>
@@ -99,5 +99,9 @@
         </div>
     </section>
 </div>
+
+<script src="js/jquery-1.11.1.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/login.js"></script>
 </body>
 </html>
