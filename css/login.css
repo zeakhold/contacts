@@ -254,6 +254,7 @@ input {
     margin-top: 4px;
     padding: 10px 5px 10px 32px;
     border: 1px solid rgb(178, 178, 178);
+    font-family: 微软雅黑, 'Microsoft YaHei', 宋体, SimSun, PMingLiU, Verdana, Arial, Helvetica, sans-serif;
     -webkit-appearance: textfield;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
