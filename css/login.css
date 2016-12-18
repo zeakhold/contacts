@@ -8,7 +8,6 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 微软雅黑, 'Microsoft YaHei', 宋体, SimSun, PMingLiU, Verdana, Arial, Helvetica, sans-serif;
 }
 
 table {
@@ -53,7 +52,7 @@ footer, header, hgroup, menu, nav, section {
 
 /* General Demo Style */
 body {
-    font-family: Cambria, Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+    font-family: 微软雅黑, 'Microsoft YaHei', 宋体, SimSun, PMingLiU, Verdana, Arial, Helvetica, sans-serif;
     background: #fff url(../images/login-bg.jpg) repeat top left;
     font-weight: 400;
     font-size: 16px;
