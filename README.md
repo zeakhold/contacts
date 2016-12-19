@@ -6,6 +6,7 @@
 
 ### 说明
 
+* API接口文档在这里>>> http://www.showdoc.cc/10516
 * 推荐使用浏览器：Chrome 或 Safari，360浏览器、百度浏览器、QQ浏览器也行。用IE 浏览器可能会出现布局问题。
 * 全局字体样式：font-family: 微软雅黑, 'Microsoft YaHei', 宋体, SimSun, PMingLiU, Verdana, Arial, Helvetica, sans-serif;
 * 尚未做移动端的适配...
