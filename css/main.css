@@ -1,0 +1,43 @@
+* {
+    font-family: 微软雅黑, 'Microsoft YaHei', 宋体, SimSun, PMingLiU, Verdana, Arial, Helvetica, sans-serif;
+}
+
+.g-i {
+    display: inline-block;
+    background: rgba(3, 212, 244, 0.19);
+    color: #4c5d6b;
+    padding: 0 5px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.pagination {
+    padding-right: 20px;
+}
+
+.table tbody tr:hover {
+    /*cursor: pointer;*/
+    background-color: rgba(200, 236, 248, 0.38);
+}
+
+.table tbody tr td:nth-child(2) a:hover {
+    cursor: pointer;
+    color: #68d768;
+}
+
+
+/* 动态为footer添加类fixed-bottom */
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 89%;
+}
+
+
+
+
+
+
+
