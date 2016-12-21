@@ -1,7 +1,75 @@
+//倒计时变量
+var wait = 60,
+    resetWait = 60;
+//按钮倒计时处理函数
+function timer(btn) {
+    if (wait == 0) {
+        btn.removeClass("counting");
+        btn.attr("disabled",false);
+        btn.html("获取验证码");
+        wait = resetWait;
+    } else {
+        btn.addClass("counting");
+        btn.attr("disabled", true);
+        btn.html("重新发送(" + wait + "s)");
+        wait--;
+        setTimeout(function () {
+            timer(btn)
+        }, 1000);
+    }
+}
+
+//点击'获取验证码'按钮
+$(".send-code-button").click(function () {
+    //启动倒计时
+    timer($(this));
+    //发送验证码前先检查手机号有没有填写
+    var phone = $('#phonesignup').val();
+    if (phone == '') {
+        alert('请填写手机号!');
+    } else if ((/^1(3|4|5|7|8)\d{9}$/.test(phone))) {
+        sendSMS(phone);
+    } else {
+        alert('请填写合法的手机号!');
+    }
+});
+
+//向后台提交信息
+function sendSMS(phone) {
+    $.ajax({
+        type: 'POST',
+        url: 'https://keshe.b612.in/api/login.php',
+        dataType: 'json',
+        data: {
+            number: phone,
+            cmd: 'verify'
+        },
+        success: function (data) {
+            switch (data.code) {
+                case -2:
+                    console.log('没有POST手机号');
+                    break;
+                case -1:
+                    console.log('两次请求验证码时间小于60秒');
+                    break;
+                case 0:
+                    console.log('服务端发送短信失败，请稍后重试--' + data.msg);
+                    break;
+                case 1:
+                    console.log('短信发送成功');
+                    break;
+                default:
+                    console.log('遇到未知错误--' + data.msg);
+                    break;
+            }
+        },
+        error: function () {
+            console.log('请求出错')
+        }
+    });
+}
+
 $(document).ready(function () {
-    //首先判断是否有cookie,有的话自动登录
-
-
     //登录表单验证
     $('#login-form').validate({
         rules: {
@@ -88,6 +156,12 @@ $(document).ready(function () {
                 minlength: 11,
                 maxlength: 11
             },
+            verifycode: {
+                required: true,
+                digits: true,
+                minlength: 5,
+                maxlength: 5
+            },
             passwordsignup: {
                 required: true,
                 minlength: 6,
@@ -113,6 +187,12 @@ $(document).ready(function () {
                 minlength: '手机号长度应该是11位',
                 maxlength: '手机号长度应该是11位'
             },
+            verifycode: {
+                required: '请填写验证码!',
+                digits: '请输入合法的验证码!',
+                minlength: '验证码长度应该是5位',
+                maxlength: '验证码长度应该是5位'
+            },
             passwordsignup: {
                 required: '请填写密码!',
                 minlength: '密码最少为6位',
@@ -136,7 +216,7 @@ $(document).ready(function () {
                     username: $('#usernamesignup').val(),
                     phone: $('#phonesignup').val(),
                     pwd: $('#passwordsignup').val(),
-                    email:'test@test.com',
+                    code: $('#verifycode').val(),
                     cmd: 'signup'
                 },
                 success: function (data) {
@@ -147,17 +227,23 @@ $(document).ready(function () {
                         case -2:
                             console.log('存在相同手机号');
                             break;
-                        case -1:
-                            console.log('存在相同email');
-                            break;
                         case 0:
                             console.log('写入数据库失败');
                             break;
                         case 1:
                             console.log('成功');
                             break;
+                        case 2:
+                            console.log('验证码已过期--' + data.msg);
+                            break;
+                        case 3:
+                            console.log('验证码不正确--' + data.msg);
+                            break;
+                        case 4:
+                            console.log('发送验证码手机号与注册手机号不一致--' + data.msg);
+                            break;
                         default:
-                            console.log('遇到未知错误');
+                            console.log('遇到未知错误--' + data.msg);
                             break;
                     }
                 },
@@ -181,4 +267,5 @@ $(document).ready(function () {
         var string = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
         return this.optional(element) || (string.test(value));
     }, '输入不合法(只允许汉字、数字、字母和下划线的组合)!');
+
 })
