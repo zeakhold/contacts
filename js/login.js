@@ -21,13 +21,14 @@ function timer(btn) {
 
 //点击'获取验证码'按钮
 $(".send-code-button").click(function () {
-    //启动倒计时
-    timer($(this));
     //发送验证码前先检查手机号有没有填写
     var phone = $('#phonesignup').val();
     if (phone == '') {
         alert('请填写手机号!');
     } else if ((/^1(3|4|5|7|8)\d{9}$/.test(phone))) {
+        //启动倒计时
+        timer($(this));
+        //发送短信
         sendSMS(phone);
     } else {
         alert('请填写合法的手机号!');
@@ -47,23 +48,28 @@ function sendSMS(phone) {
         success: function (data) {
             switch (data.code) {
                 case -2:
+                    alert('出错啦!');
                     console.log('没有POST手机号');
                     break;
                 case -1:
+                    alert('出错啦!');
                     console.log('两次请求验证码时间小于60秒');
                     break;
                 case 0:
+                    alert('出错啦!');
                     console.log('服务端发送短信失败，请稍后重试--' + data.msg);
                     break;
                 case 1:
                     console.log('短信发送成功');
                     break;
                 default:
+                    alert('出错啦!');
                     console.log('遇到未知错误--' + data.msg);
                     break;
             }
         },
         error: function () {
+            alert('出错啦!');
             console.log('请求出错')
         }
     });
@@ -119,9 +125,11 @@ $(document).ready(function () {
                             console.log('登录成功');
                             break;
                         case 2:
-                            console.log('登录失败:' + data.msg);
+                            alert('登录失败!');
+                            console.log(data.msg);
                             break;
                         default:
+                            alert('出错啦!')
                             console.log('遇到未知错误');
                             break;
                     }
@@ -222,32 +230,39 @@ $(document).ready(function () {
                 success: function (data) {
                     switch (data.code) {
                         case -3:
-                            alert('存在相同用户名');
+                            alert('存在相同用户名!');
                             break;
                         case -2:
-                            console.log('存在相同手机号');
+                            alert('存在相同手机号!');
                             break;
                         case 0:
+                            alert('出错啦!');
                             console.log('写入数据库失败');
                             break;
                         case 1:
-                            console.log('成功');
+                            alert('注册成功,请登录!');
+                            window.location.hash = '#tologin'
                             break;
                         case 2:
-                            console.log('验证码已过期--' + data.msg);
+                            alert('验证码已过期!');
+                            console.log(data.msg);
                             break;
                         case 3:
-                            console.log('验证码不正确--' + data.msg);
+                            alert('验证码不正确!');
+                            console.log(data.msg);
                             break;
                         case 4:
-                            console.log('发送验证码手机号与注册手机号不一致--' + data.msg);
+                            alert('发送验证码手机号与注册手机号不一致!');
+                            console.log(data.msg);
                             break;
                         default:
+                            alert('出错啦!');
                             console.log('遇到未知错误--' + data.msg);
                             break;
                     }
                 },
                 error: function () {
+                    alert('出错啦!');
                     console.log('请求出错')
                 }
             });
@@ -256,6 +271,7 @@ $(document).ready(function () {
         },
         //注册表单验证不通过
         invalidHandler: function (event, validator) {
+            alert('您的输入有误,请重新填写.')
             console.log('输入有误,无法向后台提交信息,提示用户重新填写')
             //阻止表单提交
             return false;
@@ -268,4 +284,5 @@ $(document).ready(function () {
         return this.optional(element) || (string.test(value));
     }, '输入不合法(只允许汉字、数字、字母和下划线的组合)!');
 
-})
+});
+

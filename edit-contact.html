@@ -82,8 +82,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="" href="index.html"><span class="navbar-brand">
-            <span class="fa fa-paper-plane"></span> 云端通讯录</span>
+        <a class="navbar-brand" href="index.html">
+            <i class="fa fa-paper-plane"></i> 云端通讯录
         </a>
     </div>
 
@@ -126,6 +126,10 @@
     <div class="main-content">
         <div class="header">
             <h1 class="page-title">编辑联系人</h1>
+            <ul class="breadcrumb">
+                <li><a href="index.html">返回主页</a></li>
+                <li class="active">正在编辑</li>
+            </ul>
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -182,16 +186,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h3 id="myModalLabel">Delete Confirmation</h3>
+                        <h3 id="myModalLabel">操作确认</h3>
                     </div>
                     <div class="modal-body">
 
-                        <p class="error-text"><i class="fa fa-warning modal-icon"></i>Are you sure you want to delete
-                            the user?</p>
+                        <p class="error-text"><i class="fa fa-warning modal-icon"></i>您确定要放弃当前联系人的编辑操作?</p>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                        <button class="btn btn-danger" data-dismiss="modal">Delete</button>
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">不了</button>
+                        <button class="btn btn-danger" data-dismiss="modal">放弃</button>
                     </div>
                 </div>
             </div>

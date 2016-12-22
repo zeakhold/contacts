@@ -41,8 +41,7 @@
     #line-chart {
         height: 300px;
         width: 800px;
-        margin: 0px auto;
-        margin-top: 1em;
+        margin: 1em auto 0px;
     }
 
     .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
@@ -84,7 +83,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="index.html">
-                <i class="fa fa-paper-plane"></i> 云端通讯录
+            <i class="fa fa-paper-plane"></i> 云端通讯录
         </a>
     </div>
 
@@ -92,7 +91,8 @@
         <ul id="main-menu" class="nav navbar-nav navbar-right">
             <li class="dropdown hidden-xs">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user padding-right-small" style="position:relative;top: 3px;"></span> 我是用户名
+                    <span class="glyphicon glyphicon-user padding-right-small"
+                          style="position:relative;top: 3px;"></span> 我是用户名
                     <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu">
@@ -104,6 +104,7 @@
         </ul>
     </div>
 </div>
+
 
 <div class="sidebar-nav">
     <ul>
@@ -123,103 +124,61 @@
 
 <div class="content">
     <div class="main-content">
-        <div class="btn-toolbar list-toolbar">
-            <button class="btn btn-primary"><i class="fa fa-plus"></i> 新建联系人</button>
-            <button class="btn btn-primary"><i class="fa fa-plus"></i> 新建分组</button>
-            <button class="btn btn-default">导出</button>
-            <div class="btn-group"></div>
-            <div class="search-well">
-                <form class="form-inline" style="margin-top:0px;">
-                    <input class="input-xlarge form-control" placeholder="搜索联系人..." id="appendedInputButton"
-                           type="text">
-                    <button class="btn btn-default" type="button"><i class="fa fa-search"></i> Go</button>
-                </form>
+        <div class="header">
+            <h1 class="page-title">新建联系人</h1>
+            <ul class="breadcrumb">
+                <li><a href="index.html">返回主页</a></li>
+                <li class="active">正在新建</li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane active in" id="home">
+                        <form id="tab">
+                            <div class="form-group">
+                                <label>姓名</label>
+                                <input type="text" value="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>电话</label>
+                                <input type="text" value="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>QQ</label>
+                                <input type="text" value="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>分组</label>
+                                <select name="DropDownTimezone" id="DropDownTimezone" class="form-control">
+                                    <!--<option value="-4.0">家人</option>-->
+                                    <!--<option value="-3.5">学生会</option>-->
+                                    <!--<option value="-3.0">小学同学</option>-->
+                                    <!--<option value="-2.0">同乡会</option>-->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>邮箱</label>
+                                <input type="text" value="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>公司</label>
+                                <input type="text" value="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>地址</label>
+                                <input type="text" value="" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="btn-toolbar list-toolbar">
+                    <button class="btn btn-primary">保存</button>
+                    <a href="#myModal" data-toggle="modal" class="btn btn-danger">取消</a>
+                </div>
             </div>
         </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>姓名</th>
-                <th>电话</th>
-                <th>QQ</th>
-                <th>分组</th>
-                <th>&nbsp;&nbsp;操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th>1</th>
-                <td><a href="edit-contact.html">小三</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">家人</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td><a href="edit-contact.html">隔壁老王</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">同乡会</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td><a href="edit-contact.html">老赵</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">学生会</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>4</th>
-                <td><a href="edit-contact.html">小美</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">小学同学</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>5</th>
-                <td><a href="edit-contact.html">大佬</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">同乡会</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <!--<ul class="pagination pull-right">-->
-            <!--<li><a href="#">«</a></li>-->
-            <!--<li><a href="#">1</a></li>-->
-            <!--<li><a href="#">2</a></li>-->
-            <!--<li><a href="#">3</a></li>-->
-            <!--<li><a href="#">4</a></li>-->
-            <!--<li><a href="#">5</a></li>-->
-            <!--<li><a href="#">»</a></li>-->
-        <!--</ul>-->
 
         <div class="modal small fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
@@ -231,11 +190,11 @@
                     </div>
                     <div class="modal-body">
 
-                        <p class="error-text"><i class="fa fa-warning modal-icon"></i>您确定要删除该联系人?</p>
+                        <p class="error-text"><i class="fa fa-warning modal-icon"></i>您确定要放弃新建当前联系人?</p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">不了</button>
-                        <button class="btn btn-danger" data-dismiss="modal">删除</button>
+                        <button class="btn btn-danger" data-dismiss="modal">放弃</button>
                     </div>
                 </div>
             </div>
@@ -255,7 +214,7 @@
         });
     });
 </script>
-<script src="js/main.js"></script>
 
+<script src="js/main.js"></script>
 </body>
 </html>
