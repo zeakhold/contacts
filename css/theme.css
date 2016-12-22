@@ -264,6 +264,14 @@ label {
     font-size: .75em;
 }
 
+.breadcrumb a {
+    color: #428bca;
+}
+
+.breadcrumb a:hover {
+    color: #555;
+}
+
 .page-content {
     padding: 1em;
 }
@@ -298,6 +306,7 @@ footer p {
 
 .btn-toolbar.list-toolbar {
     margin-bottom: 1em;
+    padding-top: 10px;
 }
 
 .stats {
@@ -846,7 +855,6 @@ a.panel-heading:hover,
 .modal .modal-icon {
     vertical-align: middle;
     font-size: 3em;
-    float: left;
     margin-right: .25em;
 }
 
