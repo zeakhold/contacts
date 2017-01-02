@@ -1,23 +1,34 @@
-//倒计时变量
-var wait = 60,
-    resetWait = 60;
-//按钮倒计时处理函数
-function timer(btn) {
-    if (wait == 0) {
-        btn.removeClass("counting");
-        btn.attr("disabled",false);
-        btn.html("获取验证码");
-        wait = resetWait;
-    } else {
-        btn.addClass("counting");
-        btn.attr("disabled", true);
-        btn.html("重新发送(" + wait + "s)");
-        wait--;
-        setTimeout(function () {
-            timer(btn)
-        }, 1000);
-    }
-}
+//先判断用户是否已经登录
+$(function() {
+    $.ajax({
+        type: 'POST',
+        url: '/api/login.php',
+        dataType: 'json',
+        data: {
+            cmd: 'islogin'
+        },
+        success: function (data) {
+            switch (data.code) {
+                case 0:
+                    console.log('用户未登录')
+                    break;
+                case 1:
+                    console.log('用户已登录');
+                    window.location.pathname = '/contact.html';
+                    break;
+                case 2:
+                    console.log('无法获取用户信息');
+                    break;
+                default:
+                    console.log('遇到未知错误--' + data.code + data.msg);
+                    break;
+            }
+        },
+        error: function () {
+            console.log('请求出错')
+        }
+    });
+})
 
 //点击'获取验证码'按钮
 $(".send-code-button").click(function () {
@@ -27,13 +38,31 @@ $(".send-code-button").click(function () {
         alert('请填写手机号!');
     } else if ((/^1(3|4|5|7|8)\d{9}$/.test(phone))) {
         //启动倒计时
-        timer($(this));
+        toCode($(this));
         //发送短信
         sendSMS(phone);
     } else {
         alert('请填写合法的手机号!');
     }
 });
+
+//验证码按钮倒计时处理函数
+function toCode(btn) {
+    var num = 60;
+    var timer = null;
+    timer = setInterval(function () {
+        btn.addClass("counting");
+        btn.attr("disabled", true);
+        btn.html("重新发送(" + num + "s)");
+        num--;
+        if (num <= 0) {
+            clearInterval(timer)
+            btn.removeClass("counting");
+            btn.attr("disabled",false);
+            btn.html("获取验证码");
+        }
+    }, 1000)
+}
 
 //向后台提交信息
 function sendSMS(phone) {
