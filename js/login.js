@@ -1,5 +1,5 @@
-//先判断用户是否已经登录
-$(function() {
+$(function () {
+    /******* 1.判断用户是否已经登录 *******/
     $.ajax({
         type: 'POST',
         url: '/api/login.php',
@@ -28,83 +28,9 @@ $(function() {
             console.log('请求出错')
         }
     });
-})
 
-//点击'获取验证码'按钮
-$(".send-code-button").click(function () {
-    //发送验证码前先检查手机号有没有填写
-    var phone = $('#phonesignup').val();
-    if (phone == '') {
-        alert('请填写手机号!');
-    } else if ((/^1(3|4|5|7|8)\d{9}$/.test(phone))) {
-        //启动倒计时
-        toCode($(this));
-        //发送短信
-        sendSMS(phone);
-    } else {
-        alert('请填写合法的手机号!');
-    }
-});
+    /******* 2.表单验证部分 *******/
 
-//验证码按钮倒计时处理函数
-function toCode(btn) {
-    var num = 60;
-    var timer = null;
-    timer = setInterval(function () {
-        btn.addClass("counting");
-        btn.attr("disabled", true);
-        btn.html("重新发送(" + num + "s)");
-        num--;
-        if (num <= 0) {
-            clearInterval(timer)
-            btn.removeClass("counting");
-            btn.attr("disabled",false);
-            btn.html("获取验证码");
-        }
-    }, 1000)
-}
-
-//向后台提交信息
-function sendSMS(phone) {
-    $.ajax({
-        type: 'POST',
-        url: '/api/login.php',
-        dataType: 'json',
-        data: {
-            number: phone,
-            cmd: 'verify'
-        },
-        success: function (data) {
-            switch (data.code) {
-                case -2:
-                    alert('出错啦!');
-                    console.log('没有POST手机号');
-                    break;
-                case -1:
-                    alert('出错啦!');
-                    console.log('两次请求验证码时间小于60秒');
-                    break;
-                case 0:
-                    alert('出错啦!');
-                    console.log('服务端发送短信失败，请稍后重试--' + data.msg);
-                    break;
-                case 1:
-                    console.log('短信发送成功');
-                    break;
-                default:
-                    alert('出错啦!');
-                    console.log('遇到未知错误--' + data.code + data.msg);
-                    break;
-            }
-        },
-        error: function () {
-            alert('出错啦!');
-            console.log('请求出错')
-        }
-    });
-}
-
-$(document).ready(function () {
     //登录表单验证
     $('#login-form').validate({
         rules: {
@@ -141,16 +67,13 @@ $(document).ready(function () {
                 url: '/api/login.php',
                 dataType: 'json',
                 data: {
+                    cmd: 'login',
                     phone: $('#phone').val(),
-                    pwd: $('#password').val(),
-                    cmd: 'login'
+                    pwd: $('#password').val()
                 },
                 success: function (data) {
                     switch (data.code) {
                         case 0:
-                            console.log('用户已登录!');
-                            window.location.pathname = '/contact.html';
-                            break;
                         case 1:
                             console.log('登录成功');
                             window.location.pathname = '/contact.html'
@@ -161,7 +84,7 @@ $(document).ready(function () {
                             break;
                         default:
                             alert('出错啦!')
-                            console.log('遇到未知错误' + data.code +data.msg);
+                            console.log('遇到未知错误' + data.code + data.msg);
                             break;
                     }
                 },
@@ -252,11 +175,11 @@ $(document).ready(function () {
                 url: '/api/login.php',
                 dataType: 'json',
                 data: {
+                    cmd: 'signup',
                     username: $('#usernamesignup').val(),
                     phone: $('#phonesignup').val(),
                     pwd: $('#passwordsignup').val(),
-                    code: $('#verifycode').val(),
-                    cmd: 'signup'
+                    code: $('#verifycode').val()
                 },
                 success: function (data) {
                     switch (data.code) {
@@ -315,5 +238,89 @@ $(document).ready(function () {
         return this.optional(element) || (string.test(value));
     }, '输入不合法(只允许汉字、数字、字母和下划线的组合)!');
 
+
+    /******* 3.验证码部分 *******/
+
+    //点击'获取验证码'按钮
+    $(".send-code-button").click(function () {
+        //点击后按钮马上失效，防止重复点击
+        $(this).attr("disabled", true);
+        $(this).addClass("waiting");
+        //发送验证码前先检查手机号有没有填写
+        var phone = $('#phonesignup').val();
+        if (phone == '') {
+            alert('请填写手机号!');
+            //按钮恢复
+            $(this).attr("disabled", false);
+            $(this).removeClass("waiting");
+        } else if ((/^1(3|4|5|7|8)\d{9}$/.test(phone))) {
+            //启动倒计时
+            toCount($(this));
+            //发送短信
+            sendSMS(phone);
+        } else {
+            alert('请填写合法的手机号!');
+            //按钮恢复
+            $(this).attr("disabled", false);
+            $(this).removeClass("waiting");
+        }
+    });
+
+    //验证码按钮倒计时处理函数
+    function toCount(btn) {
+        var num = 60;
+        var timer = null;
+        timer = setInterval(function () {
+            btn.html("重新发送(" + num + "s)");
+            num--;
+            if (num <= 0) {
+                clearInterval(timer);
+                //按钮恢复
+                btn.attr("disabled", false);
+                btn.removeClass("waiting");
+                btn.html("获取验证码");
+            }
+        }, 1000)
+    }
+
+    //向后台提交信息
+    function sendSMS(phone) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/login.php',
+            dataType: 'json',
+            data: {
+                number: phone,
+                cmd: 'verify'
+            },
+            success: function (data) {
+                switch (data.code) {
+                    case -2:
+                        alert('出错啦!');
+                        console.log('没有POST手机号');
+                        break;
+                    case -1:
+                        alert('出错啦!');
+                        console.log('两次请求验证码时间小于60秒');
+                        break;
+                    case 0:
+                        alert('出错啦!');
+                        console.log('服务端发送短信失败，请稍后重试--' + data.msg);
+                        break;
+                    case 1:
+                        console.log('短信发送成功');
+                        break;
+                    default:
+                        alert('出错啦!');
+                        console.log('遇到未知错误--' + data.code + data.msg);
+                        break;
+                }
+            },
+            error: function () {
+                alert('出错啦!');
+                console.log('请求出错')
+            }
+        });
+    }
 });
 

@@ -615,7 +615,7 @@ p.change_link {
     color: #5ca5eb;
 }
 
-#register .counting:hover {
+#register .waiting:hover {
     cursor: wait;
     color: #7593b0;
 }
