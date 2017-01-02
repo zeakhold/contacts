@@ -40,7 +40,8 @@
     #line-chart {
         height: 300px;
         width: 800px;
-        margin: 1em auto 0px;
+        margin: 0px auto;
+        margin-top: 1em;
     }
 
     .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
@@ -105,13 +106,12 @@
     </div>
 </div>
 
-
 <div class="sidebar-nav">
     <ul>
         <li><a href="#" data-target=".dashboard-menu" class="nav-header" data-toggle="collapse"><i
                 class="fa fa-address-book-o fa-lg"></i> 全部联系人 <span class="contact-num">(0)</span></a></li>
         <li>
-            <ul class="dashboard-menu nav nav-list collapse in">
+            <ul class="dashboard-menu nav nav-list collapse in" id="group-sidebar">
                 <!--给li加 class="active" 即可激活为当前分组-->
                 <!--<li><a href="#"> 家人<span class="contact-num">(1)</span></a></li>-->
                 <!--<li><a href="#"> 学生会<span class="contact-num">(1)</span></a></li>-->
@@ -124,59 +124,59 @@
 
 <div class="content">
     <div class="main-content">
-        <div class="header">
-            <h1 class="page-title">编辑联系人</h1>
-            <ul class="breadcrumb">
-                <li><a href="contact.html">返回主页</a></li>
-                <li class="active">正在编辑</li>
-            </ul>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane active in" id="home">
-                        <form id="edit-contact-form">
-                            <div class="form-group">
-                                <label>姓名</label>
-                                <input type="text" value="" class="form-control" name="name" id="edit-contact-name">
-                            </div>
-                            <div class="form-group">
-                                <label>电话</label>
-                                <input type="text" value="" class="form-control" name="phone" id="edit-contact-phone">
-                            </div>
-                            <div class="form-group">
-                                <label>QQ</label>
-                                <input type="text" value="" class="form-control" name="qq" id="edit-contact-qq">
-                            </div>
-                            <div class="form-group">
-                                <label>分组</label>
-                                <select name="DropDownTimezone" id="DropDownTimezone" class="form-control" name="group" id="edit-contact-group-option">
-                                    <!--<option value="-10.0">未分组</option>-->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>邮箱</label>
-                                <input type="text" value="" class="form-control" name="email" id="edit-contact-email">
-                            </div>
-                            <div class="form-group">
-                                <label>公司</label>
-                                <input type="text" value="" class="form-control" name="company" id="edit-contact-company">
-                            </div>
-                            <div class="form-group">
-                                <label>地址</label>
-                                <input type="text" value="" class="form-control" name="address" id="edit-contact-address">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="btn-toolbar list-toolbar">
-                    <button class="btn btn-primary" id="edit-contact-submit">保存</button>
-                    <a href="#myModal" data-toggle="modal" class="btn btn-danger">取消</a>
-                </div>
+        <div class="btn-toolbar list-toolbar">
+            <button class="btn btn-primary" id="new-contact"><i class="fa fa-plus"></i> 新建联系人</button>
+            <button class="btn btn-primary" id="new-group"><a href="#newGroup" role="button" data-toggle="modal"
+                                                              style="color: white;"><i class="fa fa-plus"></i> 新建分组</a>
+            </button>
+            <button class="btn btn-default" id="export">导出</button>
+            <div class="btn-group"></div>
+            <div class="search-well">
+                <form class="form-inline" style="margin-top:0px;">
+                    <input class="input-xlarge form-control" placeholder="搜索联系人..." id="appendedInputButton"
+                           type="text">
+                    <button class="btn btn-default" type="button"><i class="fa fa-search"></i> Go</button>
+                </form>
             </div>
         </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>姓名</th>
+                <th>电话</th>
+                <th>QQ</th>
+                <th>分组</th>
+                <th>&nbsp;&nbsp;操作</th>
+            </tr>
+            </thead>
+            <tbody class="contacts-list">
+            <!--<tr>-->
+                <!--<th>4</th>-->
+                <!--<td><a href="edit-contact.html">小美</a></td>-->
+                <!--<td>18888888888</td>-->
+                <!--<td>666666</td>-->
+                <!--<td><span class="g-i">小学同学</span></td>-->
+                <!--<td>-->
+                    <!--<a href="edit-contact.html"><i class="fa fa-pencil"></i></a>-->
+                    <!--&nbsp;&nbsp;-->
+                    <!--<a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>-->
+                <!--</td>-->
+            <!--</tr>-->
+            </tbody>
+        </table>
 
+        <!--<ul class="pagination pull-right">-->
+        <!--<li><a href="#">«</a></li>-->
+        <!--<li><a href="#">1</a></li>-->
+        <!--<li><a href="#">2</a></li>-->
+        <!--<li><a href="#">3</a></li>-->
+        <!--<li><a href="#">4</a></li>-->
+        <!--<li><a href="#">5</a></li>-->
+        <!--<li><a href="#">»</a></li>-->
+        <!--</ul>-->
+
+        <!--删除操作确认对话框-->
         <div class="modal small fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
@@ -187,11 +187,36 @@
                     </div>
                     <div class="modal-body">
 
-                        <p class="modal-text"><i class="fa fa-warning modal-icon"></i>您确定要放弃当前联系人的编辑操作?</p>
+                        <p class="modal-text"><i class="fa fa-warning modal-icon"></i>您确定要删除该联系人?</p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">不了</button>
-                        <button class="btn btn-danger" data-dismiss="modal" onclick="window.location.pathname = '/contact.html';">放弃</button>
+                        <button class="btn btn-danger" data-dismiss="modal">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--新建分组对话框-->
+        <div class="modal small fade" id="newGroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="newGroupLabel">请输入分组名</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form id="new-group-form">
+                            <i class="fa fa-pencil modal-icon"></i>
+                            <input type="text" name="newGroupName" value="" id="new-group-input">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" id="new-group-submit">
+                            确定
+                        </button>
+                        <button class="btn btn-warning" data-dismiss="modal">取消</button>
                     </div>
                 </div>
             </div>
@@ -213,6 +238,7 @@
 </script>
 
 <script src="lib/jquery.validate.min.js"></script>
-<script src="js/edit-contact.js"></script>
+<script src="js/main.js"></script>
+
 </body>
 </html>

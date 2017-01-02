@@ -39,7 +39,7 @@ $(".send-code-button").click(function () {
 function sendSMS(phone) {
     $.ajax({
         type: 'POST',
-        url: 'https://keshe.b612.in/api/login.php',
+        url: '/api/login.php',
         dataType: 'json',
         data: {
             number: phone,
@@ -64,7 +64,7 @@ function sendSMS(phone) {
                     break;
                 default:
                     alert('出错啦!');
-                    console.log('遇到未知错误--' + data.msg);
+                    console.log('遇到未知错误--' + data.code + data.msg);
                     break;
             }
         },
@@ -109,7 +109,7 @@ $(document).ready(function () {
             console.log('校验正确,已向后台提交信息,等待后台回复');
             $.ajax({
                 type: 'POST',
-                url: 'https://keshe.b612.in/api/login.php',
+                url: '/api/login.php',
                 dataType: 'json',
                 data: {
                     phone: $('#phone').val(),
@@ -119,10 +119,12 @@ $(document).ready(function () {
                 success: function (data) {
                     switch (data.code) {
                         case 0:
-                            alert('您已登录!');
+                            console.log('用户已登录!');
+                            window.location.pathname = '/contact.html';
                             break;
                         case 1:
                             console.log('登录成功');
+                            window.location.pathname = '/contact.html'
                             break;
                         case 2:
                             alert('登录失败!');
@@ -130,7 +132,7 @@ $(document).ready(function () {
                             break;
                         default:
                             alert('出错啦!')
-                            console.log('遇到未知错误');
+                            console.log('遇到未知错误' + data.code +data.msg);
                             break;
                     }
                 },
@@ -218,7 +220,7 @@ $(document).ready(function () {
             console.log('校验正确,已向后台提交信息,等待后台回复');
             $.ajax({
                 type: 'POST',
-                url: 'https://keshe.b612.in/api/login.php',
+                url: '/api/login.php',
                 dataType: 'json',
                 data: {
                     username: $('#usernamesignup').val(),
@@ -257,7 +259,7 @@ $(document).ready(function () {
                             break;
                         default:
                             alert('出错啦!');
-                            console.log('遇到未知错误--' + data.msg);
+                            console.log('遇到未知错误--' + data.code + data.msg);
                             break;
                     }
                 },

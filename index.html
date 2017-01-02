@@ -1,261 +1,111 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>云端通讯录</title>
-    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="img/favicon.ico">
-
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
-
-    <script src="lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-
-    <link rel="stylesheet" type="text/css" href="css/theme.css">
-    <link rel="stylesheet" type="text/css" href="css/premium.css">
-    <link rel="stylesheet" href="css/main.css">
-</head>
-<body class=" theme-blue">
-
-<!-- Demo page code -->
-<script type="text/javascript">
-    $(function () {
-        var match = document.cookie.match(new RegExp('color=([^;]+)'));
-        if (match) var color = match[1];
-        if (color) {
-            $('body').removeClass(function (index, css) {
-                return (css.match(/\btheme-\S+/g) || []).join(' ')
-            })
-            $('body').addClass('theme-' + color);
-        }
-
-        $('[data-popover="true"]').popover({html: true});
-
-    });
-</script>
-<style type="text/css">
-    #line-chart {
-        height: 300px;
-        width: 800px;
-        margin: 0px auto;
-        margin-top: 1em;
-    }
-
-    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
-        color: #fff;
-    }
-</style>
-
-<script type="text/javascript">
-    $(function () {
-        var uls = $('.sidebar-nav > ul > *').clone();
-        uls.addClass('visible-xs');
-        $('#main-menu').append(uls.clone());
-    });
-</script>
-
-<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-
+<!DOCTYPE html>
 <!--[if lt IE 7 ]>
-<body class="ie ie6"> <![endif]-->
+<html lang="en" class="no-js ie6 lt8"> <![endif]-->
 <!--[if IE 7 ]>
-<body class="ie ie7 "> <![endif]-->
+<html lang="en" class="no-js ie7 lt8"> <![endif]-->
 <!--[if IE 8 ]>
-<body class="ie ie8 "> <![endif]-->
+<html lang="en" class="no-js ie8 lt8"> <![endif]-->
 <!--[if IE 9 ]>
-<body class="ie ie9 "> <![endif]-->
+<html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="UTF-8"/>
+    <title>云端通讯录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="这是一个具有云同步功能的通讯录,通过它你可以轻松备份,管理和使用手机里的通讯录"/>
+    <meta name="keywords" content="通讯录,云通讯录,联系人"/>
+    <meta name="author" content="Codrops"/>
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/login.css"/>
+    <link rel="stylesheet" type="text/css" href="css/animate-custom.css"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>云端通讯录</h1>
+        <nav class="codrops-demos">
+            让您的工作更为高效，生活更加便捷
+        </nav>
+    </header>
+    <section>
+        <div id="container_demo">
+            <!--隐藏链接,做切换登录注册用-->
+            <a class="hiddenanchor" id="toregister"></a>
+            <a class="hiddenanchor" id="tologin"></a>
 
-<!--<![endif]-->
-
-<div class="navbar navbar-default" role="navigation">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="index.html">
-                <i class="fa fa-paper-plane"></i> 云端通讯录
-        </a>
-    </div>
-
-    <div class="navbar-collapse collapse" style="height: 1px;">
-        <ul id="main-menu" class="nav navbar-nav navbar-right">
-            <li class="dropdown hidden-xs">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user padding-right-small" style="position:relative;top: 3px;"></span> 我是用户名
-                    <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">修改信息</a></li>
-                    <li class="divider"></li>
-                    <li><a tabindex="-1" href="#">退出登录</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<div class="sidebar-nav">
-    <ul>
-        <li><a href="#" data-target=".dashboard-menu" class="nav-header" data-toggle="collapse"><i
-                class="fa fa-address-book-o fa-lg"></i> 全部联系人 <span class="contact-num">(5)</span></a></li>
-        <li>
-            <ul class="dashboard-menu nav nav-list collapse in">
-                <!--给li加 class="active" 即可激活为当前分组-->
-                <li><a href="#"> 家人<span class="contact-num">(1)</span></a></li>
-                <li><a href="#"> 学生会<span class="contact-num">(1)</span></a></li>
-                <li><a href="#"> 小学同学<span class="contact-num">(1)</span></a></li>
-                <li><a href="#"> 同乡会<span class="contact-num">(2)</span></a></li>
-            </ul>
-        </li>
-    </ul>
-</div>
-
-<div class="content">
-    <div class="main-content">
-        <div class="btn-toolbar list-toolbar">
-            <button class="btn btn-primary"><i class="fa fa-plus"></i> 新建联系人</button>
-            <button class="btn btn-primary"><i class="fa fa-plus"></i> 新建分组</button>
-            <button class="btn btn-default">导出</button>
-            <div class="btn-group"></div>
-            <div class="search-well">
-                <form class="form-inline" style="margin-top:0px;">
-                    <input class="input-xlarge form-control" placeholder="搜索联系人..." id="appendedInputButton"
-                           type="text">
-                    <button class="btn btn-default" type="button"><i class="fa fa-search"></i> Go</button>
-                </form>
-            </div>
-        </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>姓名</th>
-                <th>电话</th>
-                <th>QQ</th>
-                <th>分组</th>
-                <th>&nbsp;&nbsp;操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th>1</th>
-                <td><a href="edit-contact.html">小三</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">家人</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td><a href="edit-contact.html">隔壁老王</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">同乡会</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td><a href="edit-contact.html">老赵</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">学生会</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>4</th>
-                <td><a href="edit-contact.html">小美</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">小学同学</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <th>5</th>
-                <td><a href="edit-contact.html">大佬</a></td>
-                <td>18888888888</td>
-                <td>666666</td>
-                <td><span class="g-i">同乡会</span></td>
-                <td>
-                    <a href="edit-contact.html"><i class="fa fa-pencil"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="#myModal" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <!--<ul class="pagination pull-right">-->
-            <!--<li><a href="#">«</a></li>-->
-            <!--<li><a href="#">1</a></li>-->
-            <!--<li><a href="#">2</a></li>-->
-            <!--<li><a href="#">3</a></li>-->
-            <!--<li><a href="#">4</a></li>-->
-            <!--<li><a href="#">5</a></li>-->
-            <!--<li><a href="#">»</a></li>-->
-        <!--</ul>-->
-
-        <div class="modal small fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h3 id="myModalLabel">操作确认</h3>
-                    </div>
-                    <div class="modal-body">
-
-                        <p class="error-text"><i class="fa fa-warning modal-icon"></i>您确定要删除该联系人?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">不了</button>
-                        <button class="btn btn-danger" data-dismiss="modal">删除</button>
-                    </div>
+            <div id="wrapper">
+                <!--登录页-->
+                <div id="login" class="animate form">
+                    <form autocomplete="on" id="login-form">
+                        <h1>登录平台</h1>
+                        <div class="a-line">
+                            <label for="phone" class="icon-phone"> 手机号 </label>
+                            <input id="phone" name="phone" required="required" type="text"
+                                   placeholder="my phone number"/>
+                        </div>
+                        <div class="a-line">
+                            <label for="password" class="icon-key"> 密码 </label>
+                            <input id="password" name="password" required="required" type="password"
+                                   placeholder="my password"/>
+                        </div>
+                        <p class="login button">
+                            <input type="submit" value="登录"/>
+                        </p>
+                        <p class="change_link">
+                            还没有帐号?
+                            <a href="#toregister" class="to_register">注册</a>
+                        </p>
+                    </form>
+                </div>
+                <!--注册页-->
+                <div id="register" class="animate form">
+                    <form autocomplete="on" id="register-form">
+                        <h1> 注册帐号 </h1>
+                        <div class="a-line">
+                            <label for="usernamesignup" class="icon-user">用户名</label>
+                            <input id="usernamesignup" name="usernamesignup" required="required" type="text"
+                                   placeholder="真实姓名或常用昵称"/>
+                        </div>
+                        <div class="a-line">
+                            <label for="phonesignup" class="icon-phone"> 手机号 </label>
+                            <input id="phonesignup" name="phonesignup" required="required" type="text"
+                                   placeholder="仅支持中国大陆手机号"/>
+                        </div>
+                        <div class="a-line">
+                            <label for="verifycode"> 验证码 </label>
+                            <div class="input-wrapper">
+                                <button type="button" class="send-code-button">获取验证码</button>
+                                <input id="verifycode" name="verifycode" required="required" type="text"
+                                       placeholder="请输入手机收到的验证码"/>
+                            </div>
+                        </div>
+                        <div class="a-line">
+                            <label for="passwordsignup" class="icon-key"> 密码 </label>
+                            <input id="passwordsignup" name="passwordsignup" required="required" type="password"
+                                   placeholder="不少于6位"/>
+                        </div>
+                        <div class="a-line">
+                            <label for="passwordsignup_confirm" class="icon-key"> 请再次确认密码 </label>
+                            <input id="passwordsignup_confirm" name="passwordsignup_confirm" required="required"
+                                   type="password" placeholder="不少于6位"/>
+                        </div>
+                        <p class="signin button">
+                            <input type="submit" value="注册"/>
+                        </p>
+                        <p class="change_link">
+                            已有帐号 ?
+                            <a href="#tologin" class="to_register"> 登录 </a>
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    <footer>
-        <p> CopyRight © 2016 数据库挖掘机团队</p>
-    </footer>
+    </section>
 </div>
 
-<script src="lib/bootstrap/js/bootstrap.js"></script>
-<script type="text/javascript">
-    $("[rel=tooltip]").tooltip();
-    $(function () {
-        $('.demo-cancel-click').click(function () {
-            return false;
-        });
-    });
-</script>
-<script src="js/main.js"></script>
-
+<script src="lib/jquery-1.11.1.min.js"></script>
+<script src="lib/jquery.validate.min.js"></script>
+<script src="js/login.js"></script>
 </body>
 </html>

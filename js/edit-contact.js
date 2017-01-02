@@ -1,4 +1,22 @@
-var delId = null;
+//获取url中的参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return unescape(r[2]); return null; //返回参数值
+}
+
+var editId = getUrlParam('id');
+
+//填写表单
+function fillForm(data) {
+    $('#edit-contact-name').val(data.name);
+    $('#edit-contact-phone').val(data.tele);
+    $('#edit-contact-qq').val(data.qq);
+    $('#edit-contact-group-option').val(data.fenzu);
+    $('#edit-contact-email').val(data.email);
+    $('#edit-contact-company').val(data.comp);
+    $('#edit-contact-address').val(data.addr);
+}
 
 //保证不同分辨率下footer能固定在底部
 $(function () {
@@ -26,19 +44,20 @@ $(function () {
 
 function createGroup(data) {
     var len = data.length;
+    var allCon = 0;
     for (var i = 0; i < len; i++) {
         var liHtml = $("<li><a href='#'" + " fid='" + data[i].fid + "'" + ">" + data[i].fname + "<span class='contact-num'>(" + data[i].count + ")</span></a></li>");
-        //var liHtml = $("<li><a href='#'" + " fid='" + data[i].fid + "'" + ">" + data[i].fname + "</a></li>");
         liHtml.appendTo('.dashboard-menu');
+        allCon += data[i].count;
     }
+    $('.nav-header span').text("(" + allCon + ")");
 }
 
-function createContact(data) {
+function createGroupLab(data) {
     var len = data.length;
-    $('.nav-header span').text("(" + len + ")");
     for (var i = 0; i < len; i++) {
-        var liHtml = $("<tr><th>" + (i + 1) + "</th><td><a href='edit-contact.html?id="+ data[i].id +"'>" + data[i].name + "</a></td><td>" + data[i].tele + "</td> <td>" + data[i].qq + "</td> <td><span class='g-i'>" + data[i].fname + "</span></td> <td" + " contract-id='" + data[i].id + "'" + "> <a href='edit-contact.html?id="+ data[i].id +"'" + " class='edit-contact'" + "><i class='fa fa-pencil'></i></a> &nbsp;&nbsp; <a href='#myModal' role='button' data-toggle='modal'" + " class='delete-contact'" + "><i class='fa fa-trash-o'></i></a> </td> </tr>");
-        liHtml.appendTo('.contacts-list');
+        var opHtml = $("<option value='"+i+"'" + " fid='" + data[i].fid +"'>"+data[i].fname+"</option>");
+        opHtml.appendTo('.edit-contact-group-option');
     }
 }
 
@@ -85,8 +104,10 @@ function init() {
             switch (data.code) {
                 case 1:
                     console.log('获取分组成功');
-                    //创建分组DOM
+                    //创建左边栏分组DOM
                     createGroup(data.info);
+                    //创建分组下拉标签DOM
+                    createGroupLab(data.info);
                     break;
                 case -6:
                     alert('登录失效,请重新登录!');
@@ -103,25 +124,26 @@ function init() {
         }
     });
 
-    //获取全部联系人信息
+    //获取表单联系人原来的信息
     $.ajax({
         type: 'POST',
         url: '/api/contact.php',
         dataType: 'json',
         data: {
-            num: 20,
-            page: 1,
-            cmd: 'list'
+            id:editId,
+            cmd: 'getone'
         },
         success: function (data) {
             switch (data.code) {
-                case 0:
-                    alert('当前请求页数超过总页数!');
+                case -2:
+                    console.log('权限错误');
+                    break;
+                case -1:
+                    console.log('数据库错误');
                     break;
                 case 1:
-                    console.log('获取联系人成功');
-                    //创建联系人DOM
-                    createContact(data.info);
+                    console.log('获取成功');
+                    fillForm(data.info);
                     break;
                 case -6:
                     alert('登录失效,请重新登录!');
@@ -129,7 +151,7 @@ function init() {
                     console.log(data.msg);
                     break;
                 default:
-                    console.log('获取联系人时遇到未知错误' + data.code + data.msg);
+                    console.log('获取分组时遇到未知错误--' + data.code + data.msg);
                     break;
             }
         },
@@ -137,54 +159,87 @@ function init() {
             console.log('请求出错')
         }
     });
+
 }
 
 $(document).ready(function () {
     init();
 
-    //新建联系人按钮点击
-    $('#new-contact').click(function () {
-        window.location.pathname = '/new-contact.html';
-    });
-
-    //新建分组表单验证
-    $('#new-group-form').validate({
+    //编辑联系人表单验证
+    $('#edit-contact-form').validate({
         rules: {
-            newGroupName: {
+            name: {
                 required: true,
-                minlength: 1,
-                maxlength: 8,
+                minlength: 2,
+                maxlength: 12,
+            },
+            phone: {
+                required: true,
+                digits: true,
+                minlength: 11,
+                maxlength: 11
+            },
+            qq: {
+                required: true,
+                digits: true,
+                minlength: 5,
+                maxlength: 11
+            },
+            group: {
+                required: true,
             }
         },
         messages: {
-            newGroupName: {
-                required: '请填写分组名!',
-                minlength: '分组名最少为1个字符',
-                maxlength: '分组名最多为8个字符',
+            name: {
+                required: '请填写姓名!',
+                minlength: '姓名最少为2个字符',
+                maxlength: '姓名最多为12个字符',
+            },
+            phone: {
+                required: '请填写手机号!',
+                digits: '请输入合法的手机号!',
+                minlength: '手机号长度应该是11位',
+                maxlength: '手机号长度应该是11位'
+            },
+            qq: {
+                required: '请填写QQ号!',
+                digits: '请输入合法的QQ号!',
+                minlength: 'QQ号最短为5位',
+                maxlength: 'QQ号最长为11位'
+            },
+            group: {
+                required: '请选择分组!',
             }
         },
-        //分组表单验证通过
+        //编辑联系人表单验证通过
         submitHandler: function (form) {
             console.log('校验正确,已向后台提交信息,等待后台回复');
             $.ajax({
                 type: 'POST',
-                url: '/api/tag.php',
+                url: '/api/contact.php',
                 dataType: 'json',
                 data: {
-                    name: $('#new-group-input').val(),
-                    cmd: 'add'
+                    id:editId,
+                    name: $('#edit-contact-name').val(),
+                    phone: $('#edit-contact-phone').val(),
+                    qq: $('#edit-contact-qq').val(),
+                    fenzu: $('.edit-contact-group-option option:selected').attr('fid'),
+                    email: $('#edit-contact-email').val(),
+                    addr: $('#edit-contact-address').val(),
+                    comp: $('#edit-contact-company').val(),
+                    cmd: 'change'
                 },
                 success: function (data) {
                     switch (data.code) {
                         case -1:
-                            alert('已存在相同分组名称!');
+                            alert('分组错误，不存在此分组!');
                             break;
                         case 0:
                             alert('出错啦!');
                             console.log('写入数据库失败');
                             break;
                         case 1:
-                            alert('成功新建分组名');
+                            alert('成功编辑联系人');
                             window.location.pathname = '/contact.html';
                             break;
                         default:
@@ -211,98 +266,15 @@ $(document).ready(function () {
         }
     });
 
-    //新建分组提交按钮
-    $('#new-group-submit').click(function () {
+    //当点下'保存'按钮才提交表单
+    $('#edit-contact-submit').click(function () {
         //应该先验证后提交
-        $('#new-group-form').submit();
-    });
-
-    //导出
-    $('#export').click(function () {
-
-    });
-
-    //删除联系人
-    $('#myModal .btn-danger').click(function () {
-        console.log('用户确定删除');
-        delContact();
+        $('#edit-contact-form').submit();
     })
 
-    setTimeout(function () {
-        //检测用户点击了哪一个删除按钮
-        $('.contacts-list .delete-contact').click(function () {
-            delId = $(this).parent().attr('contract-id');
-        })
-    }, 2000)
-
-    $('.search-well .btn').click(function() {
-        console.log('sss')
-        var str = $(this).val();
-        $.ajax({
-            type: 'POST',
-            url: '/api/contact.php',
-            dataType: 'json',
-            data: {
-                any: str,
-                cmd: 'search'
-            },
-            success: function (data) {
-                switch (data.code) {
-                    case 0:
-                        alert('出错啦')
-                        console.log('当前请求页数超过总页数')
-                        break;
-                    case 1:
-                        console.log('成功');
-                        break;
-                    default:
-                        console.log('遇到未知错误--' + data.code + data.msg);
-                        break;
-                }
-            },
-            error: function () {
-                console.log('请求出错')
-            }
-        });
-        window.location.pathname = '/search.html';
+    //放弃新建联系人
+    $('#myModal .btn-danger').click(function() {
+        window.location.pathname = '/contact.html';
     })
-
 });
 
-function delContact() {
-    $.ajax({
-        type: 'POST',
-        url: '/api/contact.php',
-        dataType: 'json',
-        data: {
-            id: delId,
-            cmd: 'delete'
-        },
-        success: function (data) {
-            switch (data.code) {
-                case -2:
-                    alert('出错啦')
-                    console.log('权限错误')
-                    break;
-                case -1:
-                    alert('出错啦')
-                    console.log('不存在此人')
-                    break;
-                case 0:
-                    alert('出错啦')
-                    console.log('数据库写入错误')
-                    break;
-                case 1:
-                    console.log('删除成功');
-                    break;
-                default:
-                    console.log('遇到未知错误--' + data.code + data.msg);
-                    break;
-            }
-        },
-        error: function () {
-            console.log('请求出错')
-        }
-    });
-     window.location.pathname = '/contact.html';
-}
