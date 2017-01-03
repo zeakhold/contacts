@@ -7,13 +7,13 @@ $(function () {
 
     /***** 1.保证不同分辨率下footer能固定在底部 *****/
 
-    //设置主内容窗口最小高度min-height
-    var h = window.innerHeight || document.body.clientHeight || document.documentElement.clientHeight;
-    h = h - $(".navbar").height() - $("footer").height();
-    $(".content").css("min-height", h);
-
     //判断主内容高度与窗口高度的大小
     function footerPosition() {
+        //设置主内容窗口最小高度min-height
+        var h = window.innerHeight || document.body.clientHeight || document.documentElement.clientHeight;
+        h = h - $(".navbar").height() - $("footer").height();
+        $(".content").css("min-height", h);
+
         $("footer").removeClass("fixed-bottom");
         var contentHeight = document.body.scrollHeight,//网页正文全文高度
             winHeight = window.innerHeight;//可视窗口高度，不包括浏览器顶部工具栏
@@ -148,7 +148,7 @@ $(function () {
             var len = contacts.length;
             $('.nav-header span').text("(" + len + ")");
             for (var i = 0; i < len; i++) {
-                var liHtml = $("<tr><th>" + (i + 1) + "</th><td><a data-id='" + contacts[i].id + "' data-action='edit-contact'>" + contacts[i].name + "</a></td><td>" + contacts[i].tele + "</td> <td>" + contacts[i].qq + "</td><td><span class='g-i'>" + contacts[i].fname + "</span></td><td><a data-id='" + contacts[i].id + "' class='edit-contact' href='javascript:void(0);' data-action='edit-contact'" + "><i class='fa fa-pencil'></i></a> &nbsp;&nbsp; <a href='#confirm-dialog' role='button' data-toggle='modal'" + " class='delete-contact' data-action='delete-contact' data-id='" + contacts[i].id + "'><i class='fa fa-trash-o'></i></a></td></tr>");
+                var liHtml = $("<tr><th>" + (i + 1) + "</th><td><a data-id='" + contacts[i].id + "' data-action='edit-contact'>" + contacts[i].name + "</a></td><td>" + contacts[i].tele + "</td> <td>" + contacts[i].qq + "</td><td><span class='g-i'>" + contacts[i].fname + "</span></td><td><a data-id='" + contacts[i].id + "' class='edit-contact' href='javascript:void(0);' data-action='edit-contact'" + "><i class='fa fa-pencil'></i></a> &nbsp;&nbsp; <a href='javascript:void(0);' role='button' data-toggle='modal'" + " class='delete-contact' data-action='delete-contact' data-id='" + contacts[i].id + "'><i class='fa fa-trash-o'></i></a></td></tr>");
                 liHtml.appendTo('.contacts-list');
             }
         }
@@ -264,29 +264,67 @@ $(function () {
         },
         //删除联系人
         'delete-contact': function () {
-
+            //其实应该添加一步确认操作，这里偷懒直接删除:）
+            $.ajax({
+                type: 'POST',
+                url: '/api/contact.php',
+                dataType: 'json',
+                data: {
+                    cmd: 'delete',
+                    id: DATA_ID
+                },
+                success: function (data) {
+                    switch (data.code) {
+                        case -2:
+                            alert('出错啦')
+                            console.log('权限错误')
+                            break;
+                        case -1:
+                            alert('出错啦')
+                            console.log('不存在此人')
+                            break;
+                        case 0:
+                            alert('出错啦')
+                            console.log('数据库写入错误')
+                            break;
+                        case 1:
+                            alert('删除成功!');
+                            window.location.pathname = '/contact.html';
+                            break;
+                        default:
+                            alert('出错啦')
+                            console.log('遇到未知错误--' + data.code + data.msg);
+                            break;
+                    }
+                },
+                error: function () {
+                    console.log('请求出错')
+                }
+            });
         },
         //点击分组
         'group': function () {
 
         },
-        //保存按钮（新建/编辑联系人底部）
+        /**** a.新建/编辑联系人底部 ****/
+        //保存按钮
         'edit-contact-submit': function () {
             //触发提交表单事件
             $('#edit-contact-form').submit();
         },
-        //取消按钮（新建/编辑联系人底部）
+        //取消按钮
         'edit-contact-cancel': function () {
-            //弹窗询问
+            window.location.pathname = '/contact.html';
         },
-        //保存按钮（新建/编辑分对话框）
+        /**** b.新建/编辑分组对话框 ****/
+        //保存按钮
         'edit-group-submit': function () {
             //触发提交表单事件
             $('#edit-group-form').submit();
         },
-        //取消按钮（新建/编辑分对话框）
+        //取消按钮
         'edit-group-cancel': function () {
-            //弹窗询问
+            window.location.pathname = '/contact.html';
         }
     }
 
@@ -305,7 +343,7 @@ $(function () {
 
     /***** 4.表单验证 *****/
 
-    //新建/编辑联系人表单验证
+        //新建/编辑联系人表单验证
     $('#edit-contact-form').validate({
         rules: {
             name: {
@@ -431,7 +469,8 @@ $(function () {
                 dataType: 'json',
                 data: {
                     cmd: CMD,
-                    name: $('#edit-group-input').val()
+                    name: $('#edit-group-input').val(),
+                    id: DATA_ID
                 },
                 success: function (data) {
                     switch (data.code) {
@@ -470,60 +509,6 @@ $(function () {
         }
     });
 
-
-
-    //删除联系人
-    function delContact() {
-        $.ajax({
-            type: 'POST',
-            url: '/api/contact.php',
-            dataType: 'json',
-            data: {
-                cmd: 'delete',
-                id: delId
-            },
-            success: function (data) {
-                switch (data.code) {
-                    case -2:
-                        alert('出错啦')
-                        console.log('权限错误')
-                        break;
-                    case -1:
-                        alert('出错啦')
-                        console.log('不存在此人')
-                        break;
-                    case 0:
-                        alert('出错啦')
-                        console.log('数据库写入错误')
-                        break;
-                    case 1:
-                        console.log('删除成功');
-                        break;
-                    default:
-                        console.log('遇到未知错误--' + data.code + data.msg);
-                        break;
-                }
-            },
-            error: function () {
-                console.log('请求出错')
-            }
-        });
-        window.location.pathname = '/contact.html';
-    }
-
-
-    //删除联系人
-    $('#myModal .btn-danger').click(function () {
-        console.log('用户确定删除');
-        delContact();
-    })
-
-    setTimeout(function () {
-        //检测用户点击了哪一个删除按钮
-        $('.contacts-list .delete-contact').click(function () {
-            delId = $(this).parent().attr('contact-id');
-        })
-    }, 2000)
 
     //搜索
     $('.search-well .btn').click(function () {
