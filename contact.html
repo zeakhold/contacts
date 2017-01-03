@@ -59,9 +59,13 @@
 <div class="content">
     <div class="contact-list">
         <div class="btn-toolbar list-toolbar">
-            <button class="btn btn-primary" id="new-contact" data-action="new-contact"><i class="fa fa-plus"></i> 新建联系人</button>
-            <button class="btn btn-primary" id="new-group" data-action="new-group"><a href="#newGroup" role="button" data-toggle="modal"
-                                                              style="color: white;"><i class="fa fa-plus"></i> 新建分组</a>
+            <button class="btn btn-primary" id="new-contact" data-action="new-contact"><i class="fa fa-plus"></i> 新建联系人
+            </button>
+            <button class="btn btn-primary" id="new-group" data-action="new-group"><a href="#edit-group-dialog"
+                                                                                      role="button"
+                                                                                      data-toggle="modal"
+                                                                                      style="color: white;"><i
+                    class="fa fa-plus"></i> 新建分组</a>
             </button>
             <button class="btn btn-default" id="export" data-action="export">导出</button>
             <div class="btn-group"></div>
@@ -69,7 +73,8 @@
                 <form class="form-inline" style="margin-top:0px;">
                     <input class="input-xlarge form-control" placeholder="搜索联系人..." id="appendedInputButton"
                            type="text">
-                    <button class="btn btn-default" type="button" data-action="search"><i class="fa fa-search"></i> Go</button>
+                    <button class="btn btn-default" type="button" data-action="search"><i class="fa fa-search"></i> Go
+                    </button>
                 </form>
             </div>
         </div>
@@ -135,7 +140,9 @@
                             </div>
                             <div class="form-group">
                                 <label>分组</label>
-                                <select name="DropDownTimezone" id="DropDownTimezone" class="form-control edit-contact-group-select" name="group" id="edit-contact-group-select">
+                                <select name="DropDownTimezone" id="DropDownTimezone"
+                                        class="form-control edit-contact-group-select" name="group"
+                                        id="edit-contact-group-select">
                                     <!--<option value="-10.0">未分组</option>-->
                                 </select>
                             </div>
@@ -145,26 +152,31 @@
                             </div>
                             <div class="form-group">
                                 <label>公司</label>
-                                <input type="text" value="" class="form-control" name="company" id="edit-contact-company">
+                                <input type="text" value="" class="form-control" name="company"
+                                       id="edit-contact-company">
                             </div>
                             <div class="form-group">
                                 <label>地址</label>
-                                <input type="text" value="" class="form-control" name="address" id="edit-contact-address">
+                                <input type="text" value="" class="form-control" name="address"
+                                       id="edit-contact-address">
                             </div>
                         </form>
                     </div>
                 </div>
 
                 <div class="btn-toolbar list-toolbar">
-                    <button class="btn btn-primary" id="edit-contact-submit" data-action="edit-contact-submit">保存</button>
-                    <a href="#myModal" data-toggle="modal" class="btn btn-danger" data-action="edit-contact-cancel">取消</a>
+                    <button class="btn btn-primary" id="edit-contact-submit" data-action="edit-contact-submit">保存
+                    </button>
+                    <a href="#confirm-dialog" data-toggle="modal" class="btn btn-danger"
+                       data-action="edit-contact-cancel">取消</a>
                 </div>
             </div>
         </div>
     </div>
     <div class="dialog">
+
         <!--删除操作确认对话框-->
-        <div class="modal small fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        <div class="modal small fade" id="confirm-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -185,25 +197,25 @@
         </div>
 
         <!--新建分组对话框-->
-        <div class="modal small fade" id="newGroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        <div class="modal small fade" id="edit-group-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h3 id="newGroupLabel">请输入分组名</h3>
+                        <h3 id="edit-group-title">请输入分组名</h3>
                     </div>
                     <div class="modal-body">
-                        <form id="new-group-form">
+                        <form id="edit-group-form">
                             <i class="fa fa-pencil modal-icon"></i>
-                            <input type="text" name="newGroupName" value="" id="new-group-input">
+                            <input type="text" name="newGroupName" value="" id="edit-group-input">
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" id="new-group-submit">
+                        <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" id="edit-group-submit" data-action="edit-group-submit">
                             确定
                         </button>
-                        <button class="btn btn-warning" data-dismiss="modal">取消</button>
+                        <button class="btn btn-warning" data-dismiss="modal" data-action="edit-group-cancel">取消</button>
                     </div>
                 </div>
             </div>

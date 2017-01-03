@@ -55,11 +55,11 @@
     color: #68d768;
 }
 
-#new-group-form {
+#edit-group-form {
     text-align: center;
 }
 
-#newGroup input {
+#edit-group-dialog input {
     display: inline-block;
     height: 30px;
     padding-left: 5px;
