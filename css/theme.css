@@ -114,7 +114,7 @@ label {
 
 /*Navbar*/
 .navbar-collapse {
-    position: relative;
+    /*position: relative;*/
     z-index: 9999;
 }
 
