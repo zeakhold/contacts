@@ -144,6 +144,8 @@ $(function () {
 
     //创建联系人DOM
     function createContact(contacts) {
+        //先清空页面
+        $('.contacts-list').html('');
         if (contacts.length) {
             var len = contacts.length;
             $('.nav-header span').text("(" + len + ")");
@@ -216,7 +218,45 @@ $(function () {
         },
         //搜索联系人
         'search': function () {
+            //确保内容板块在列表页
+            $('.contact-list').css('display', 'block');
+            $('.contact-editor').css('display', 'none');
 
+            var str = $.trim($('#search-text').val());
+            if (str == '') {
+                alert('输入不能为空！');
+                return false;
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/api/contact.php',
+                dataType: 'json',
+                data: {
+                    cmd: 'search',
+                    any: str
+                },
+                success: function (data) {
+                    switch (data.code) {
+                        case 0:
+                            alert('出错啦');
+                            console.log('当前请求页数超过总页数')
+                            break;
+                        case 1:
+                            console.log('搜索联系人成功');
+                            //创建联系人DOM
+                            createContact(data.info);
+                            break;
+                        default:
+                            alert('出错啦');
+                            console.log('遇到未知错误--' + data.code + data.msg);
+                            break;
+                    }
+                },
+                error: function () {
+                    alert('出错啦!');
+                    console.log('请求出错');
+                }
+            });
         },
         //编辑联系人
         'edit-contact': function () {
@@ -510,39 +550,7 @@ $(function () {
     });
 
 
-    //搜索
-    $('.search-well .btn').click(function () {
-        console.log('sss')
-        var str = $(this).val();
-        $.ajax({
-            type: 'POST',
-            url: '/api/contact.php',
-            dataType: 'json',
-            data: {
-                cmd: 'search',
-                any: str
-            },
-            success: function (data) {
-                switch (data.code) {
-                    case 0:
-                        alert('出错啦')
-                        console.log('当前请求页数超过总页数')
-                        break;
-                    case 1:
-                        console.log('成功');
-                        break;
-                    default:
-                        console.log('遇到未知错误--' + data.code + data.msg);
-                        break;
-                }
-            },
-            error: function () {
-                console.log('请求出错')
-            }
-        });
-        window.location.pathname = '/search.html';
-    })
-
+    /***** 5.即执行部分 *****/
 
     init();
 });
