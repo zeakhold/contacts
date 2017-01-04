@@ -13,7 +13,7 @@
     font-size: 12px;
 }
 
-.form-group label.error {
+form label.error {
     color: red;
 }
 
@@ -63,6 +63,7 @@
     display: inline-block;
     height: 30px;
     padding-left: 5px;
+    margin: 0 5px 0 0;
 }
 
 .contact-editor {

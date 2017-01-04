@@ -28,10 +28,10 @@ $(function () {
     $(window).resize(footerPosition);
 
 
-    /***** 2.处理页面 *****/
+    /***** 2.页面处理函数部分 *****/
 
     //初始化渲染页面
-    function init() {
+    function render() {
         //获取当前用户信息
         $.ajax({
             type: 'POST',
@@ -76,7 +76,7 @@ $(function () {
                     case 1:
                         console.log('获取分组成功');
                         //创建分组DOM
-                        createGroup(data.info);
+                        handleCreateGroup(data.info);
                         break;
                     case -6:
                         //alert('登录失效,请重新登录!');
@@ -111,7 +111,7 @@ $(function () {
                     case 1:
                         console.log('获取联系人成功');
                         //创建联系人DOM
-                        createContact(data.info);
+                        handleCreateContact(data.info);
                         break;
                     case -6:
                         //alert('登录失效,请重新登录!');
@@ -127,10 +127,13 @@ $(function () {
                 console.log('请求出错')
             }
         });
+
+        bindEvent();
+        bindValidate();
     }
 
     //创建分组DOM
-    function createGroup(groups) {
+    function handleCreateGroup(groups) {
         var len = groups.length;
         for (var i = 0; i < len; i++) {
             //a.创建左边栏的分组
@@ -143,10 +146,10 @@ $(function () {
     }
 
     //创建联系人DOM
-    function createContact(contacts) {
+    function handleCreateContact(contacts) {
         //先清空页面
         $('.contacts-list').html('');
-        if (contacts.length) {
+        if (contacts != null || contacts != undefined || contacts != '') {
             var len = contacts.length;
             $('.nav-header span').text("(" + len + ")");
             for (var i = 0; i < len; i++) {
@@ -156,8 +159,173 @@ $(function () {
         }
     }
 
+    //退出登录
+    function handleLogout() {
+        $.ajax({
+            type: 'POST',
+            url: '/api/login.php',
+            dataType: 'json',
+            data: {
+                cmd: 'logout',
+            },
+            success: function (data) {
+                switch (data.code) {
+                    case 1:
+                        alert('成功退出登录！');
+                        window.location.pathname = '/index.php';
+                        break;
+                    case 2:
+                        alert('退出登录失败！');
+                        break;
+                    default:
+                        alert('出错啦!');
+                        console.log('遇到未知错误--' + data.code + data.msg);
+                        break;
+                }
+            },
+            error: function () {
+                alert('出错啦!');
+                console.log('请求出错')
+            }
+        });
+    }
 
-    /***** 3.处理按钮 *****/
+    //搜索联系人
+    function handleSearchContact() {
+        //确保内容板块在列表页
+        $('.contact-list').css('display', 'block');
+        $('.contact-editor').css('display', 'none');
+
+        var str = $.trim($('#search-text').val());
+        if (str == '') {
+            alert('输入不能为空！');
+            return false;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/api/contact.php',
+            dataType: 'json',
+            data: {
+                cmd: 'search',
+                any: str
+            },
+            success: function (data) {
+                switch (data.code) {
+                    case 0:
+                        alert('出错啦');
+                        console.log('当前请求页数超过总页数')
+                        break;
+                    case 1:
+                        console.log('搜索联系人成功');
+                        //判断有没有联系人
+                        if (data.info == null || data.info == undefined || data.info == '') {
+                            alert('找不到匹配的联系人');
+                        } else {
+                            //创建联系人DOM
+                            handleCreateContact(data.info);
+                        }
+                        break;
+                    default:
+                        alert('出错啦');
+                        console.log('遇到未知错误--' + data.code + data.msg);
+                        break;
+                }
+            },
+            error: function () {
+                alert('出错啦!');
+                console.log('请求出错');
+            }
+        });
+    }
+
+    //编辑联系人
+    function handleEditContact() {
+        CMD = 'change';
+        //改标题
+        $('.contact-editor .page-title').html('编辑联系人');
+        $('.contact-editor .breadcrumb .active').html('正在编辑');
+        //切换内容板块
+        $('.contact-list').css('display', 'none');
+        $('.contact-editor').css('display', 'block');
+
+        //获取该联系人信息
+        $.ajax({
+            type: 'POST',
+            url: '/api/contact.php',
+            dataType: 'json',
+            data: {
+                cmd: 'getone',
+                id: DATA_ID
+            },
+            success: function (data) {
+                switch (data.code) {
+                    case 1:
+                        console.log('成功获取该联系人信息');
+                        //往表单填数据
+                        $('#edit-contact-name').val(data.info.name);
+                        $('#edit-contact-phone').val(data.info.tele);
+                        $('#edit-contact-qq').val(data.info.qq);
+                        $(".edit-contact-group-select").val(data.info.fenzu);
+                        $('#edit-contact-email').val(data.info.email);
+                        $('#edit-contact-company').val(data.info.comp);
+                        $('#edit-contact-address').val(data.info.addr);
+                        break;
+                    default:
+                        alert('出错啦!');
+                        console.log('遇到未知错误--' + data.code + data.msg);
+                        break;
+                }
+            },
+            error: function () {
+                alert('出错啦!');
+                console.log('请求出错')
+            }
+        });
+    }
+
+    //删除联系人
+    function handleDeleteContact() {
+        //其实应该添加一步确认操作，这里偷懒直接删除:）
+        $.ajax({
+            type: 'POST',
+            url: '/api/contact.php',
+            dataType: 'json',
+            data: {
+                cmd: 'delete',
+                id: DATA_ID
+            },
+            success: function (data) {
+                switch (data.code) {
+                    case -2:
+                        alert('出错啦')
+                        console.log('权限错误')
+                        break;
+                    case -1:
+                        alert('出错啦')
+                        console.log('不存在此人')
+                        break;
+                    case 0:
+                        alert('出错啦')
+                        console.log('数据库写入错误')
+                        break;
+                    case 1:
+                        alert('删除成功!');
+                        window.location.pathname = '/contact.html';
+                        break;
+                    default:
+                        alert('出错啦')
+                        console.log('遇到未知错误--' + data.code + data.msg);
+                        break;
+                }
+            },
+            error: function () {
+                console.log('请求出错')
+            }
+        });
+    }
+
+
+    /***** 3.事件处理部分 *****/
     //参照 https://github.com/cssmagic/blog/issues/48
 
     //按钮事件列表
@@ -168,33 +336,7 @@ $(function () {
         },
         //退出登录
         'log-out': function () {
-            $.ajax({
-                type: 'POST',
-                url: '/api/login.php',
-                dataType: 'json',
-                data: {
-                    cmd: 'logout',
-                },
-                success: function (data) {
-                    switch (data.code) {
-                        case 1:
-                            alert('成功退出登录！');
-                            window.location.pathname = '/index.php';
-                            break;
-                        case 2:
-                            alert('退出登录失败！');
-                            break;
-                        default:
-                            alert('出错啦!');
-                            console.log('遇到未知错误--' + data.code + data.msg);
-                            break;
-                    }
-                },
-                error: function () {
-                    alert('出错啦!');
-                    console.log('请求出错')
-                }
-            });
+            handleLogout();
         },
         //新建联系人
         'new-contact': function () {
@@ -209,6 +351,8 @@ $(function () {
         //新建分组
         'new-group': function () {
             CMD = 'add';
+            //打开对话框
+            $('#edit-group-dialog').modal('show')
             //改对话框标题
             $('#edit-group-dialog #edit-group-title').html('请输入分组名');
         },
@@ -218,129 +362,15 @@ $(function () {
         },
         //搜索联系人
         'search': function () {
-            //确保内容板块在列表页
-            $('.contact-list').css('display', 'block');
-            $('.contact-editor').css('display', 'none');
-
-            var str = $.trim($('#search-text').val());
-            if (str == '') {
-                alert('输入不能为空！');
-                return false;
-            }
-            $.ajax({
-                type: 'POST',
-                url: '/api/contact.php',
-                dataType: 'json',
-                data: {
-                    cmd: 'search',
-                    any: str
-                },
-                success: function (data) {
-                    switch (data.code) {
-                        case 0:
-                            alert('出错啦');
-                            console.log('当前请求页数超过总页数')
-                            break;
-                        case 1:
-                            console.log('搜索联系人成功');
-                            //创建联系人DOM
-                            createContact(data.info);
-                            break;
-                        default:
-                            alert('出错啦');
-                            console.log('遇到未知错误--' + data.code + data.msg);
-                            break;
-                    }
-                },
-                error: function () {
-                    alert('出错啦!');
-                    console.log('请求出错');
-                }
-            });
+            handleSearchContact();
         },
         //编辑联系人
         'edit-contact': function () {
-            CMD = 'change';
-            //改标题
-            $('.contact-editor .page-title').html('编辑联系人');
-            $('.contact-editor .breadcrumb .active').html('正在编辑');
-            //切换内容板块
-            $('.contact-list').css('display', 'none');
-            $('.contact-editor').css('display', 'block');
-
-            //获取该联系人信息
-            $.ajax({
-                type: 'POST',
-                url: '/api/contact.php',
-                dataType: 'json',
-                data: {
-                    cmd: 'getone',
-                    id: DATA_ID
-                },
-                success: function (data) {
-                    switch (data.code) {
-                        case 1:
-                            console.log('成功获取该联系人信息');
-                            //往表单填数据
-                            $('#edit-contact-name').val(data.info.name);
-                            $('#edit-contact-phone').val(data.info.tele);
-                            $('#edit-contact-qq').val(data.info.qq);
-                            $(".edit-contact-group-select").val(data.info.fenzu);
-                            $('#edit-contact-email').val(data.info.email);
-                            $('#edit-contact-company').val(data.info.comp);
-                            $('#edit-contact-address').val(data.info.addr);
-                            break;
-                        default:
-                            alert('出错啦!');
-                            console.log('遇到未知错误--' + data.code + data.msg);
-                            break;
-                    }
-                },
-                error: function () {
-                    alert('出错啦!');
-                    console.log('请求出错')
-                }
-            });
+            handleEditContact();
         },
         //删除联系人
         'delete-contact': function () {
-            //其实应该添加一步确认操作，这里偷懒直接删除:）
-            $.ajax({
-                type: 'POST',
-                url: '/api/contact.php',
-                dataType: 'json',
-                data: {
-                    cmd: 'delete',
-                    id: DATA_ID
-                },
-                success: function (data) {
-                    switch (data.code) {
-                        case -2:
-                            alert('出错啦')
-                            console.log('权限错误')
-                            break;
-                        case -1:
-                            alert('出错啦')
-                            console.log('不存在此人')
-                            break;
-                        case 0:
-                            alert('出错啦')
-                            console.log('数据库写入错误')
-                            break;
-                        case 1:
-                            alert('删除成功!');
-                            window.location.pathname = '/contact.html';
-                            break;
-                        default:
-                            alert('出错啦')
-                            console.log('遇到未知错误--' + data.code + data.msg);
-                            break;
-                    }
-                },
-                error: function () {
-                    console.log('请求出错')
-                }
-            });
+            handleDeleteContact();
         },
         //点击分组
         'group': function () {
@@ -354,7 +384,9 @@ $(function () {
         },
         //取消按钮
         'edit-contact-cancel': function () {
-            window.location.pathname = '/contact.html';
+            //切换内容板块
+            $('.contact-list').css('display', 'block');
+            $('.contact-editor').css('display', 'none');
         },
         /**** b.新建/编辑分组对话框 ****/
         //保存按钮
@@ -364,194 +396,218 @@ $(function () {
         },
         //取消按钮
         'edit-group-cancel': function () {
-            window.location.pathname = '/contact.html';
+
         }
     }
 
-    //处理按钮点击事件
-    $('body').on('click', '[data-action]', function () {
-        //如果是编辑联系人或点击分组，则传入ID
-        var dataId = $(this).attr('data-id');
-        DATA_ID = (dataId == undefined) ? DATA_ID : dataId;
+    //绑定事件
+    function bindEvent() {
 
-        var actionName = $(this).data('action');
-        var action = actionList[actionName];
+        //处理按钮点击事件
+        $('body').on('click', '[data-action]', function () {
+            //如果是编辑联系人或点击分组，则传入ID
+            var dataId = $(this).attr('data-id');
+            DATA_ID = (dataId == undefined) ? DATA_ID : dataId;
 
-        if ($.isFunction(action)) action();
-    })
+            var actionName = $(this).data('action');
+            var action = actionList[actionName];
+
+            if ($.isFunction(action)) action();
+
+            //阻止默认的点击事件
+            return false;
+        })
+
+        //绑定搜索回车事件
+        $('#search-text').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                handleSearchContact();
+                //阻止默认的回车跳转事件
+                return false;
+            }
+        });
+    }
 
 
     /***** 4.表单验证 *****/
-
+    //绑定验证
+    function bindValidate() {
         //新建/编辑联系人表单验证
-    $('#edit-contact-form').validate({
-        rules: {
-            name: {
-                required: true,
-                minlength: 2,
-                maxlength: 12,
-            },
-            phone: {
-                required: true,
-                digits: true,
-                minlength: 11,
-                maxlength: 11
-            },
-            qq: {
-                required: true,
-                digits: true,
-                minlength: 5,
-                maxlength: 11
-            },
-            group: {
-                required: true,
-            }
-        },
-        messages: {
-            name: {
-                required: '请填写姓名!',
-                minlength: '姓名最少为2个字符',
-                maxlength: '姓名最多为12个字符',
-            },
-            phone: {
-                required: '请填写手机号!',
-                digits: '请输入合法的手机号!',
-                minlength: '手机号长度应该是11位',
-                maxlength: '手机号长度应该是11位'
-            },
-            qq: {
-                required: '请填写QQ号!',
-                digits: '请输入合法的QQ号!',
-                minlength: 'QQ号最短为5位',
-                maxlength: 'QQ号最长为11位'
-            },
-            group: {
-                required: '请选择分组!',
-            }
-        },
-        //表单验证通过
-        submitHandler: function (form) {
-            console.log('校验正确,已向后台提交信息,等待后台回复');
-            $.ajax({
-                type: 'POST',
-                url: '/api/contact.php',
-                dataType: 'json',
-                data: {
-                    cmd: CMD,
-                    name: $('#edit-contact-name').val(),
-                    phone: $('#edit-contact-phone').val(),
-                    qq: $('#edit-contact-qq').val(),
-                    fenzu: $('.edit-contact-group-select').val(),
-                    email: $('#edit-contact-email').val(),
-                    addr: $('#edit-contact-address').val(),
-                    comp: $('#edit-contact-company').val(),
-                    id: DATA_ID
+        $('#edit-contact-form').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 12,
                 },
-                success: function (data) {
-                    switch (data.code) {
-                        case -1:
-                            alert('分组错误，不存在此分组!');
-                            break;
-                        case 0:
-                            alert('出错啦!');
-                            console.log('写入数据库失败');
-                            break;
-                        case 1:
-                            alert('保存成功！');
-                            window.location.pathname = '/contact.html';
-                            break;
-                        default:
-                            alert('出错啦!');
-                            console.log('遇到未知错误--' + data.code + data.msg);
-                            break;
-                    }
+                phone: {
+                    required: true,
+                    digits: true,
+                    minlength: 11,
+                    maxlength: 11
                 },
-                error: function () {
-                    alert('出错啦!');
-                    console.log('请求出错')
+                qq: {
+                    required: true,
+                    digits: true,
+                    minlength: 5,
+                    maxlength: 11
+                },
+                group: {
+                    required: true,
                 }
-            });
-
-            //阻止表单提交
-            return false;
-        },
-        //表单验证不通过
-        invalidHandler: function (event, validator) {
-            alert('您的输入有误,请重新填写.')
-            console.log('输入有误,无法向后台提交信息,提示用户重新填写')
-            //阻止表单提交
-            return false;
-        }
-    });
-
-    //新建/编辑分组表单验证
-    $('#edit-group-form').validate({
-        rules: {
-            newGroupName: {
-                required: true,
-                minlength: 1,
-                maxlength: 8,
-            }
-        },
-        messages: {
-            newGroupName: {
-                required: '请填写分组名!',
-                minlength: '分组名最少为1个字符',
-                maxlength: '分组名最多为8个字符',
-            }
-        },
-        //分组表单验证通过
-        submitHandler: function (form) {
-            console.log('校验正确,已向后台提交信息,等待后台回复');
-            $.ajax({
-                type: 'POST',
-                url: '/api/tag.php',
-                dataType: 'json',
-                data: {
-                    cmd: CMD,
-                    name: $('#edit-group-input').val(),
-                    id: DATA_ID
+            },
+            messages: {
+                name: {
+                    required: '请填写姓名!',
+                    minlength: '姓名最少为2个字符',
+                    maxlength: '姓名最多为12个字符',
                 },
-                success: function (data) {
-                    switch (data.code) {
-                        case -1:
-                            alert('已存在相同分组名称!');
-                            break;
-                        case 0:
-                            alert('出错啦!');
-                            console.log('写入数据库失败');
-                            break;
-                        case 1:
-                            alert('成功新建分组名');
-                            window.location.pathname = '/contact.html';
-                            break;
-                        default:
-                            alert('出错啦!');
-                            console.log('遇到未知错误--' + data.code + data.msg);
-                            break;
-                    }
+                phone: {
+                    required: '请填写手机号!',
+                    digits: '请输入合法的手机号!',
+                    minlength: '手机号长度应该是11位',
+                    maxlength: '手机号长度应该是11位'
                 },
-                error: function () {
-                    alert('出错啦!');
-                    console.log('请求出错')
+                qq: {
+                    required: '请填写QQ号!',
+                    digits: '请输入合法的QQ号!',
+                    minlength: 'QQ号最短为5位',
+                    maxlength: 'QQ号最长为11位'
+                },
+                group: {
+                    required: '请选择分组!',
                 }
-            });
+            },
+            //表单验证通过
+            submitHandler: function (form) {
+                console.log('校验正确,已向后台提交信息,等待后台回复');
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/contact.php',
+                    dataType: 'json',
+                    data: {
+                        cmd: CMD,
+                        name: $('#edit-contact-name').val(),
+                        phone: $('#edit-contact-phone').val(),
+                        qq: $('#edit-contact-qq').val(),
+                        fenzu: $('.edit-contact-group-select').val(),
+                        email: $('#edit-contact-email').val(),
+                        addr: $('#edit-contact-address').val(),
+                        comp: $('#edit-contact-company').val(),
+                        id: DATA_ID
+                    },
+                    success: function (data) {
+                        switch (data.code) {
+                            case -1:
+                                alert('分组错误，不存在此分组!');
+                                break;
+                            case 0:
+                                alert('出错啦!');
+                                console.log('写入数据库失败');
+                                break;
+                            case 1:
+                                alert('保存成功！');
+                                window.location.pathname = '/contact.html';
+                                break;
+                            default:
+                                alert('出错啦!');
+                                console.log('遇到未知错误--' + data.code + data.msg);
+                                break;
+                        }
+                    },
+                    error: function () {
+                        alert('出错啦!');
+                        console.log('请求出错')
+                    }
+                });
 
-            //阻止表单提交
-            return false;
-        },
-        //表单验证不通过
-        invalidHandler: function (event, validator) {
-            alert('您的输入有误,请重新填写.')
-            console.log('输入有误,无法向后台提交信息,提示用户重新填写')
-            //阻止表单提交
-            return false;
-        }
-    });
+                //阻止表单提交
+                return false;
+            },
+            //表单验证不通过
+            invalidHandler: function (event, validator) {
+                alert('您的输入有误,请重新填写.')
+                console.log('输入有误,无法向后台提交信息,提示用户重新填写')
+                //阻止表单提交
+                return false;
+            }
+        });
+
+        //新建/编辑分组表单验证
+        $('#edit-group-form').validate({
+            rules: {
+                newGroupName: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 8,
+                    string: true
+                }
+            },
+            messages: {
+                newGroupName: {
+                    required: '请填写分组名!',
+                    minlength: '分组名最少为1个字符!',
+                    maxlength: '分组名最多为8个字符!',
+                }
+            },
+            //分组表单验证通过
+            submitHandler: function (form) {
+                console.log('校验正确,已向后台提交信息,等待后台回复');
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/tag.php',
+                    dataType: 'json',
+                    data: {
+                        cmd: CMD,
+                        name: $('#edit-group-input').val(),
+                        id: DATA_ID
+                    },
+                    success: function (data) {
+                        switch (data.code) {
+                            case -1:
+                                alert('已存在相同分组名称!');
+                                break;
+                            case 0:
+                                alert('出错啦!');
+                                console.log('写入数据库失败');
+                                break;
+                            case 1:
+                                alert('成功新建分组名');
+                                window.location.reload();
+                                break;
+                            default:
+                                alert('出错啦!');
+                                console.log('遇到未知错误--' + data.code + data.msg);
+                                break;
+                        }
+                    },
+                    error: function () {
+                        alert('出错啦!');
+                        console.log('请求出错')
+                    }
+                });
+
+                //阻止表单提交
+                return false;
+            },
+            //表单验证不通过
+            invalidHandler: function (event, validator) {
+                console.log('输入有误,无法向后台提交信息,提示用户重新填写')
+                //阻止表单提交
+                return false;
+            }
+        });
+
+        //自定义对分组名的验证方法(只允许汉字、数字、字母和下划线的组合)
+        $.validator.addMethod('string', function (value, element, params) {
+            var string = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+            return this.optional(element) || (string.test(value));
+        }, '输入不合法(只允许汉字、数字、字母和下划线的组合)!');
+    }
 
 
-    /***** 5.即执行部分 *****/
+    /***** 5.其它 *****/
 
-    init();
+    render();
 });
 
