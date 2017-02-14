@@ -67,8 +67,14 @@
                                                                                       style="color: white;"><i
                     class="fa fa-plus"></i> 新建分组</a>
             </button>
-            <button class="btn btn-default" id="export" data-action="export">导出</button>
-            <div class="btn-group"></div>
+            <div class="btn-group export-button">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">导出 <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="javascript:void(0)" data-action="export-excel">导出为 Excel</a></li>
+                    <li><a href="javascript:void(0)" data-action="export-csv">导出为 CSV</a></li>
+                    <li><a href="javascript:void(0)" data-action="export-txt">导出为 TXT</a></li>
+                </ul>
+            </div>
             <div class="search-well">
                 <form class="form-inline" style="margin-top:0px;">
                     <input class="input-xlarge form-control" placeholder="搜索联系人..." id="search-text"
@@ -78,7 +84,7 @@
                 </form>
             </div>
         </div>
-        <table class="table">
+        <table class="table" id="contact-table">
             <thead>
             <tr>
                 <th>#</th>

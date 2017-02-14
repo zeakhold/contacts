@@ -356,9 +356,14 @@ $(function () {
             //改对话框标题
             $('#edit-group-dialog #edit-group-title').html('请输入分组名');
         },
-        //导出联系人
-        'export': function () {
-
+        //导出联系人--excel
+        'export-excel': function () {
+        },
+        //导出联系人--csv
+        'export-csv': function () {
+        },
+        //导出联系人--txt
+        'export-txt': function () {
         },
         //搜索联系人
         'search': function () {

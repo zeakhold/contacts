@@ -70,3 +70,7 @@ form label.error {
     display: none;
     padding: 15px 15px 0px 15px;
 }
+
+.export-button {
+    float: none !important;
+}
