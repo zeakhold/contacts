@@ -2,6 +2,10 @@
     font-family: 微软雅黑, 'Microsoft YaHei', 宋体, SimSun, PMingLiU, Verdana, Arial, Helvetica, sans-serif;
 }
 
+html {
+    background: white;
+}
+
 .g-i {
     display: inline-block;
     background: rgba(3, 212, 244, 0.19);
@@ -33,14 +37,6 @@ form label.error {
 .table tbody tr td:nth-child(2) a:hover {
     cursor: pointer;
     color: #68d768;
-}
-
-
-/* 动态为footer添加类fixed-bottom */
-.fixed-bottom {
-    position: fixed;
-    bottom: 0;
-    width: 89%;
 }
 
 .navbar-header:hover {

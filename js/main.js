@@ -4,34 +4,15 @@ $(function () {
     //联系人ID或分组ID
     var DATA_ID = null;
 
-
-    /***** 1.保证不同分辨率下footer能固定在底部 *****/
-
-    //判断主内容高度与窗口高度的大小
-    function footerPosition() {
-        //设置主内容窗口最小高度min-height
-        var h = window.innerHeight || document.body.clientHeight || document.documentElement.clientHeight;
-        h = h - $(".navbar").height() - $("footer").height();
-        $(".content").css("min-height", h);
-
-        $("footer").removeClass("fixed-bottom");
-        var contentHeight = document.body.scrollHeight,//网页正文全文高度
-            winHeight = window.innerHeight;//可视窗口高度，不包括浏览器顶部工具栏
-        if (!(contentHeight > winHeight)) {
-            //当网页正文高度小于可视窗口高度时，为footer添加类fixed-bottom
-            $("footer").addClass("fixed-bottom");
-        } else {
-            $("footer").removeClass("fixed-bottom");
-        }
-    };
-    footerPosition();
-    $(window).resize(footerPosition);
-
-
-    /***** 2.页面处理函数部分 *****/
+    /***** 1.页面处理函数部分 *****/
 
     //初始化渲染页面
     function render() {
+        //动态调节主内容窗口高度
+        var h = window.innerHeight || document.body.clientHeight || document.documentElement.clientHeight;
+        h = h - $(".navbar").height();
+        $(".content").css("min-height", h);
+
         //获取当前用户信息
         $.ajax({
             type: 'POST',
@@ -193,7 +174,7 @@ $(function () {
     //搜索联系人
     function handleSearchContact() {
         //确保内容板块在列表页
-        $('.contact-list').css('display', 'block');
+        $('.main-content').css('display', 'block');
         $('.contact-editor').css('display', 'none');
 
         var str = $.trim($('#search-text').val());
@@ -245,7 +226,7 @@ $(function () {
         $('.contact-editor .page-title').html('编辑联系人');
         $('.contact-editor .breadcrumb .active').html('正在编辑');
         //切换内容板块
-        $('.contact-list').css('display', 'none');
+        $('.main-content').css('display', 'none');
         $('.contact-editor').css('display', 'block');
 
         //获取该联系人信息
@@ -325,7 +306,7 @@ $(function () {
     }
 
 
-    /***** 3.事件处理部分 *****/
+    /***** 2.事件处理部分 *****/
     //参照 https://github.com/cssmagic/blog/issues/48
 
     //按钮事件列表
@@ -345,7 +326,7 @@ $(function () {
             $('.contact-editor .page-title').html('新建联系人');
             $('.contact-editor .breadcrumb .active').html('正在新建');
             //切换内容板块
-            $('.contact-list').css('display', 'none');
+            $('.main-content').css('display', 'none');
             $('.contact-editor').css('display', 'block');
         },
         //新建分组
@@ -390,7 +371,7 @@ $(function () {
         //取消按钮
         'edit-contact-cancel': function () {
             //切换内容板块
-            $('.contact-list').css('display', 'block');
+            $('.main-content').css('display', 'block');
             $('.contact-editor').css('display', 'none');
         },
         /**** b.新建/编辑分组对话框 ****/
@@ -434,7 +415,7 @@ $(function () {
     }
 
 
-    /***** 4.表单验证 *****/
+    /***** 3.表单验证 *****/
     //绑定验证
     function bindValidate() {
         //新建/编辑联系人表单验证
@@ -611,7 +592,7 @@ $(function () {
     }
 
 
-    /***** 5.其它 *****/
+    /***** 4.其它 *****/
 
     render();
 });
