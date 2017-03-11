@@ -46,7 +46,8 @@
 <div class="sidebar-nav">
     <ul>
         <li><a href="#" data-target=".dashboard-menu" class="nav-header" data-toggle="collapse"><i
-                class="fa fa-address-book-o fa-lg"></i> 全部联系人 <span class="contact-num">(0)</span></a></li>
+                class="fa fa-address-book-o fa-lg"></i> 全部联系人 <span class="contact-num"
+                                                                    id="contact-count">(0)</span></a></li>
         <li>
             <ul class="dashboard-menu nav nav-list collapse in" id="group-sidebar">
                 <!--给li加 class="active" 即可激活为当前分组-->
@@ -68,7 +69,8 @@
                     class="fa fa-plus"></i> 新建分组</a>
             </button>
             <div class="btn-group export-button">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">导出 <span class="caret"></span></button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="true">导出 <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="javascript:void(0)" data-action="export-excel">导出为 Excel</a></li>
                     <li><a href="javascript:void(0)" data-action="export-csv">导出为 CSV</a></li>
@@ -111,12 +113,13 @@
             </tbody>
         </table>
 
-        <!--<ul class="pagination pull-right">-->
-        <!--<li><a href="#">«</a></li>-->
-        <!--<li><a href="#">1</a></li>-->
-        <!--<li><a href="#">2</a></li>-->
-        <!--<li><a href="#">»</a></li>-->
-        <!--</ul>-->
+        <ul class="pagination pull-right">
+            <!--<li><a href="#">«</a></li>-->
+            <!--<li class='page-number'><a href="#">1</a></li>-->
+            <!--<li class='page-number'><a href="#">2</a></li>-->
+            <!--<li class='page-number'><a href="#">3</a></li>-->
+            <!--<li><a href="#">»</a></li>-->
+        </ul>
         <div class="dialog">
 
             <!--操作确认对话框-->
@@ -140,7 +143,8 @@
             <!--</div>-->
 
             <!--分组对话框-->
-            <div class="modal small fade" id="edit-group-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            <div class="modal small fade" id="edit-group-dialog" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -159,7 +163,8 @@
                                     data-action="edit-group-submit">
                                 确定
                             </button>
-                            <button class="btn btn-warning" data-dismiss="modal" data-action="edit-group-cancel">取消</button>
+                            <button class="btn btn-warning" data-dismiss="modal" data-action="edit-group-cancel">取消
+                            </button>
                         </div>
                     </div>
                 </div>

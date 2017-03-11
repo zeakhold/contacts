@@ -57,7 +57,7 @@ $(function () {
                     case 1:
                         console.log('获取分组成功');
                         //创建分组DOM
-                        handleCreateGroup(data.info);
+                        createGroup(data.info);
                         break;
                     case -6:
                         //alert('登录失效,请重新登录!');
@@ -92,7 +92,11 @@ $(function () {
                     case 1:
                         console.log('获取联系人成功');
                         //创建联系人DOM
-                        handleCreateContact(data.info);
+                        createContact(data.info, 1);
+                        //创建分页DOM
+                        createPagination(data.max_page);
+                        //填写总联系人数
+                        $('#contact-count').text("(" + data.count + ")");
                         break;
                     case -6:
                         //alert('登录失效,请重新登录!');
@@ -114,29 +118,44 @@ $(function () {
     }
 
     //创建分组DOM
-    function handleCreateGroup(groups) {
+    function createGroup(groups) {
         var len = groups.length;
         for (var i = 0; i < len; i++) {
             //a.创建左边栏的分组
             var liHtml = $("<li><a href='javascript:void(0);' data-id='" + groups[i].fid + "' data-action='group'>" + groups[i].fname + "<span class='contact-num'>(" + groups[i].count + ")</span></a></li>");
             liHtml.appendTo('.dashboard-menu');
-            //b.创建联系人表单的分组
+            //b.'新建联系人表单'的分组下拉项
             var opHtml = $("<option value='" + groups[i].fid + "'>" + groups[i].fname + "</option>");
             opHtml.appendTo('.edit-contact-group-select');
         }
     }
 
     //创建联系人DOM
-    function handleCreateContact(contacts) {
+    function createContact(contacts, page) {
         //先清空页面
         $('.contacts-list').html('');
         if (contacts != null || contacts != undefined || contacts != '') {
             var len = contacts.length;
-            $('.nav-header span').text("(" + len + ")");
             for (var i = 0; i < len; i++) {
-                var liHtml = $("<tr><th>" + (i + 1) + "</th><td><a data-id='" + contacts[i].id + "' data-action='edit-contact'>" + contacts[i].name + "</a></td><td>" + contacts[i].tele + "</td> <td>" + contacts[i].qq + "</td><td><span class='g-i'>" + contacts[i].fname + "</span></td><td><a data-id='" + contacts[i].id + "' class='edit-contact' href='javascript:void(0);' data-action='edit-contact'" + "><i class='fa fa-pencil'></i></a> &nbsp;&nbsp; <a href='javascript:void(0);' role='button' data-toggle='modal'" + " class='delete-contact' data-action='delete-contact' data-id='" + contacts[i].id + "'><i class='fa fa-trash-o'></i></a></td></tr>");
-                liHtml.appendTo('.contacts-list');
+                var trHtml = $("<tr><th>" + ((page - 1) * 20 + i + 1) + "</th><td><a data-id='" + contacts[i].id + "' data-action='edit-contact'>" + contacts[i].name + "</a></td><td>" + contacts[i].tele + "</td> <td>" + contacts[i].qq + "</td><td><span class='g-i'>" + contacts[i].fname + "</span></td><td><a data-id='" + contacts[i].id + "' class='edit-contact' href='javascript:void(0);' data-action='edit-contact'" + "><i class='fa fa-pencil'></i></a> &nbsp;&nbsp; <a href='javascript:void(0);' role='button' data-toggle='modal'" + " class='delete-contact' data-action='delete-contact' data-id='" + contacts[i].id + "'><i class='fa fa-trash-o'></i></a></td></tr>");
+                trHtml.appendTo('.contacts-list');
             }
+        }
+    }
+
+    //创建分页DOM
+    function createPagination(pageCount) {
+        if (pageCount != null || pageCount != undefined || pageCount != '') {
+            $("<li><a href='javascript:void(0)' data-action='pre-page'>«</a></li>").appendTo('.pagination');
+            for (var i = 1; i <= pageCount; i++) {
+                if (i == 1) {
+                    var liHtml = $("<li class='page-number active'><a href='#' data-action='page-number' data-id='" + i + "'>" + i + "</a></li>");
+                } else {
+                    var liHtml = $("<li class='page-number'><a href='#' data-action='page-number' data-id='" + i + "'>" + i + "</a></li>");
+                }
+                liHtml.appendTo('.pagination');
+            }
+            $("<li><a href='javascript:void(0)' data-action='next-page'>»</a></li>").appendTo('.pagination');
         }
     }
 
@@ -203,7 +222,7 @@ $(function () {
                             alert('找不到匹配的联系人');
                         } else {
                             //创建联系人DOM
-                            handleCreateContact(data.info);
+                            createContact(data.info, 1);
                         }
                         break;
                     default:
@@ -305,6 +324,63 @@ $(function () {
         });
     }
 
+    //分页操作
+    function handlePageSwitch(toPage) {
+        var pageNumbers = $('.page-number');
+        var pageCount = pageNumbers.length;
+        if (toPage > 0 && toPage <= pageCount) {
+            //修改激活的当前页码
+            for (var i = 1; i <= pageCount; i++) {
+                if (i == toPage) {
+                    pageNumbers[i - 1].className = 'page-number active';
+                } else {
+                    pageNumbers[i - 1].className = 'page-number';
+                }
+            }
+            //更新页面
+            $.ajax({
+                type: 'POST',
+                url: '/api/contact.php',
+                dataType: 'json',
+                data: {
+                    cmd: 'list',
+                    num: 20,
+                    page: toPage
+                },
+                success: function (data) {
+                    switch (data.code) {
+                        case 0:
+                            console.log('Wrong page number!');
+                            break;
+                        case 1:
+                            console.log('获取联系人成功');
+                            //创建联系人DOM
+                            createContact(data.info, toPage);
+                            break;
+                        case -6:
+                            //alert('登录失效,请重新登录!');
+                            window.location.pathname = '/index.php'
+                            console.log(data.msg);
+                            break;
+                        default:
+                            console.log('获取联系人时遇到未知错误' + data.code + data.msg);
+                            break;
+                    }
+                },
+                error: function () {
+                    console.log('请求出错')
+                }
+            });
+        } else {
+            console.log('Wrong page number!')
+        }
+    }
+
+    //获取当前页
+    function getCurrentPage() {
+        return +$('.pagination .active').text();
+    }
+
 
     /***** 2.事件处理部分 *****/
     //参照 https://github.com/cssmagic/blog/issues/48
@@ -383,15 +459,28 @@ $(function () {
         //取消按钮
         'edit-group-cancel': function () {
 
+        },
+
+        /**** 分页按钮 ****/
+        'pre-page': function () {
+            DATA_ID = getCurrentPage() - 1;
+            handlePageSwitch(DATA_ID);
+        },
+        'next-page': function () {
+            DATA_ID = getCurrentPage() + 1;
+            handlePageSwitch(DATA_ID);
+        },
+        'page-number': function () {
+            handlePageSwitch(DATA_ID);
         }
     }
 
     //绑定事件
     function bindEvent() {
 
-        //处理按钮点击事件
+        //事件委托,处理点击事件
         $('body').on('click', '[data-action]', function () {
-            //如果是编辑联系人或点击分组，则传入ID
+            //如果是编辑联系人或点击分组或翻页，则传入ID
             var dataId = $(this).attr('data-id');
             DATA_ID = (dataId == undefined) ? DATA_ID : dataId;
 
