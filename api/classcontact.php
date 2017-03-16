@@ -217,7 +217,7 @@ class mycontact
            {
                $tmp5[]=$tmp4[$i-1];
            }
-            $result=array("code"=>1,"count"=>count($tmp5),"max_page"=>$ym,"info"=>$tmp5);
+            $result=array("code"=>1,"count"=>(int)$fres[0],"max_page"=>$ym,"info"=>$tmp5);
             return $result;
        }
          $result=array("code"=>1,"count"=>(int)$fres[0],"info"=>$tmp4);
