@@ -245,7 +245,7 @@ class userlogin {
         }else{
             $code=rand(10000,99999);
             $naiyou="【广工天协】欢迎您注册课设云端通讯录，您的验证码为:".$code."，五分钟内有效。";
-            $url="http://tui3.com/api/send/?k=f13fafb92fd288b92fa81038ce592594&r=json&p=1id&t=".$phonenumber."&c=".$naiyou;
+            $url="http://tui3.com/api/send/?k=yourkey&r=json&p=1id&t=".$phonenumber."&c=".$naiyou;
             $res= GetURL($url,1);
              $k= json_decode($res);
             if($k->err_code==0)
