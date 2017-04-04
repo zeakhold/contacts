@@ -13,36 +13,8 @@ $(function () {
         h = h - $(".navbar").height();
         $(".content").css("min-height", h);
 
-        //获取当前用户信息
-        $.ajax({
-            type: 'POST',
-            url: '/api/login.php',
-            dataType: 'json',
-            data: {
-                cmd: 'islogin'
-            },
-            success: function (data) {
-                switch (data.code) {
-                    case 0:
-                        alert('登录失效,请重新登录!');
-                        window.location.pathname = '/index.php';
-                        break;
-                    case 1:
-                        console.log('获取用户信息成功');
-                        $('#username').text(data.info.username);
-                        break;
-                    case 2:
-                        console.log('查询失败');
-                        break;
-                    default:
-                        console.log('遇到未知错误--' + data.code + data.msg);
-                        break;
-                }
-            },
-            error: function () {
-                console.log('请求出错')
-            }
-        });
+        //先判断是否登录
+        isLogin();
 
         //获取全部分组
         $.ajax({
@@ -74,7 +46,7 @@ $(function () {
             }
         });
 
-        //获取全部联系人信息
+        //获取联系人信息
         $.ajax({
             type: 'POST',
             url: '/api/contact.php',
@@ -116,6 +88,41 @@ $(function () {
         bindEvent();
         bindValidate();
     }
+
+    //判断是否登录
+    function isLogin() {
+        $.ajax({
+            type: 'POST',
+            url: '/api/login.php',
+            dataType: 'json',
+            data: {
+                cmd: 'islogin'
+            },
+            success: function (data) {
+                switch (data.code) {
+                    case 0:
+                        alert('登录失效,请重新登录!');
+                        window.location.pathname = '/index.php';
+                        return false;
+                    case 1:
+                        console.log('用户已登录');
+                        $('#username').text(data.info.username);
+                        return true;
+                    case 2:
+                        console.log('查询失败');
+                        return false;
+                    default:
+                        console.log('遇到未知错误--' + data.code + data.msg);
+                        return false;
+                }
+            },
+            error: function () {
+                console.log('请求出错');
+                return false;
+            }
+        });
+    }
+
 
     //创建分组DOM
     function createGroup(groups) {
@@ -324,6 +331,12 @@ $(function () {
         });
     }
 
+    function handleExport() {
+        isLogin();
+        window.open('https://keshe.b612.in/api/download.php?check=lalala');
+    }
+
+
     //分页操作
     function handlePageSwitch(toPage) {
         var pageNumbers = $('.page-number');
@@ -413,14 +426,9 @@ $(function () {
             //改对话框标题
             $('#edit-group-dialog #edit-group-title').html('请输入分组名');
         },
-        //导出联系人--excel
-        'export-excel': function () {
-        },
         //导出联系人--csv
         'export-csv': function () {
-        },
-        //导出联系人--txt
-        'export-txt': function () {
+            handleExport();
         },
         //搜索联系人
         'search': function () {
