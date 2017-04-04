@@ -1,17 +1,22 @@
 <?php
 ob_start();
 /**
-if(!isset($_POST['cmd']) || trim($_POST['cmd'])=="")
+if(!isset($_GET['cmd']) || trim($_GET['cmd'])=="")
 {
      $back=array("code"=>-5,"msg"=>"no command string");
     die(json_encode($back));
 }
 **/
-$cmd=$_POST['cmd'];
+$cmd=$_GET['cmd'];
 require("classcontact.php");
 require("userlogin.php");
 $user=new userlogin;
-if(!isset($_POST['check']) || trim($_POST['check'])=="")
+if($user->IsLogin()==0)
+	{
+		$json=array("code"=>-6,"msg"=>"not login");
+		die(json_encode($json));
+	}
+if(!isset($_GET['check']) || trim($_GET['check'])=="")
 {
 	if($user->IsLogin()==0)
 	{
@@ -25,7 +30,7 @@ if(!isset($_POST['check']) || trim($_POST['check'])=="")
 }
 $user->Xu();
 
-if(!isset($_POST['check']) || trim($_POST['check'])=="")
+if(!isset($_GET['check']) || trim($_GET['check'])=="")
 {
 	exit;
 }
